@@ -37,7 +37,7 @@ public class Subir_oferta_fr extends Fragment {
             @Override
             public void onClick(View view) {
                 posicion = 0;
-                getFragmentManager().beginTransaction().add(R.id.content, new IZQUIERDO()).commit();
+                getFragmentManager().beginTransaction().add(R.id.content, new AddOfferFinish()).commit();
             }
         });
 

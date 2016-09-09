@@ -7,6 +7,7 @@ import android.widget.Toast;
 import com.example.androiddam.proyectofinalandroid.R;
 import com.example.androiddam.proyectofinalandroid.fragments.AddOfferFragment;
 import com.example.androiddam.proyectofinalandroid.fragments.AddSubcategoryFragment;
+import com.example.androiddam.proyectofinalandroid.fragments.AddOfferFinish;
 import com.example.androiddam.proyectofinalandroid.fragments.SelectTypeJobFragment;
 
 public class AddOfferActivity extends AppCompatActivity {
@@ -45,10 +46,28 @@ public class AddOfferActivity extends AppCompatActivity {
 
     }
 
+    public void goFinishUploadNewJob(int price){
+        posicion++;
+        izquierda = true;
+        AddOfferFinish izquierdo = new AddOfferFinish();
+        //Bundle bundle = new Bundle();
+        //addSubcategoryFragment.setArguments(bundle);
+        getSupportFragmentManager().beginTransaction().add(R.id.content, izquierdo).commit();
+
+    }
+
 
     @Override
     public void onBackPressed() {
         posicion--;
+        if (posicion==2){
+            SelectTypeJobFragment selectTypeJobFragment = new SelectTypeJobFragment();
+            //Bundle bundle = new Bundle();
+            //bundle.putInt("id_category_parent", AddSubcategoryFragment.category_id);
+            //selectTypeJobFragment.setArguments(bundle);
+            getSupportFragmentManager().beginTransaction().replace(R.id.content, selectTypeJobFragment).commit();
+
+        }
         if (posicion==1){
             AddSubcategoryFragment addSubcategoryFragment = new AddSubcategoryFragment();
             Bundle bundle = new Bundle();
@@ -62,6 +81,27 @@ public class AddOfferActivity extends AppCompatActivity {
         if (posicion==-1)
             finish();
     }
+
+    /*
+        @Override
+    public void onBackPressed() {
+        posicion--;
+
+        if (posicion==1){
+            AddSubcategoryFragment addSubcategoryFragment = new AddSubcategoryFragment();
+            Bundle bundle = new Bundle();
+            bundle.putInt("id_category_parent", AddSubcategoryFragment.category_id);
+            addSubcategoryFragment.setArguments(bundle);
+            getSupportFragmentManager().beginTransaction().replace(R.id.content, addSubcategoryFragment).commit();
+
+        }
+        if (posicion==0)
+            getSupportFragmentManager().beginTransaction().add(R.id.content, new AddOfferFragment()).commit();
+        if (posicion==-1)
+            finish();
+    }
+
+     */
 
     @Override
     protected void onDestroy() {
