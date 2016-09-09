@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="85dp"
+    android:visibility="visible"
+    android:orientation="horizontal"
+    android:background="#aaa">
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="wrap_content"
+        android:layout_height="85dp"
+        android:layout_marginLeft="20dp">
+
+        <ImageView
+            android:layout_width="22dp"
+            android:layout_height="20dp"
+            android:id="@+id/imageView3"
+            android:background="@drawable/check"
+            android:layout_gravity="center_vertical" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="85dp"
+        android:paddingTop="10dp"
+        android:paddingLeft="20dp">
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:layout_width="235dp"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:text="Juan Daniel"
+                android:id="@+id/tv_name"
+                android:textStyle="bold"
+                android:textColor="#000" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:text="22:55"
+                android:id="@+id/tv_hour"
+                android:gravity="right"
+                android:textColor="#000" />
+        </LinearLayout>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:text="Ok, nos vemos mañana en la cafetería a las 9:00"
+            android:id="@+id/tv_message"
+            android:maxLines="2"
+            android:textSize="15dp"
+            android:layout_marginTop="10dp"
+            android:textColor="#fff" />
+
+    </LinearLayout>
+
+</LinearLayout>
+

@@ -1,0 +1,52 @@
+<FrameLayout android:layout_height="match_parent"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:background="@color/colorPrimary"
+    >
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+            xmlns:tools="http://schemas.android.com/tools"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            tools:context="com.example.androiddam.proyectofinalandroid.fragments.AddOfferFragment">
+
+            <!-- TODO: Update blank fragment layout -->
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="¿A qué grupo pertenece tu servicio?"
+                android:textSize="32dp"
+                android:gravity="center_horizontal"
+                android:layout_gravity="center_horizontal|top"
+                android:textColor="#FFF"
+                android:paddingLeft="5dp"
+                android:paddingRight="5dp"
+                android:layout_marginTop="50dp" />
+
+            <ImageView
+                android:layout_width="131dp"
+                android:layout_height="131dp"
+                android:id="@+id/imageView7"
+                android:layout_gravity="center"
+                android:src="@drawable/question_offer_icon"
+                android:layout_marginTop="25dp" />
+
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/rv_add_offer"
+                android:layout_marginTop="25dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+            </android.support.v7.widget.RecyclerView>
+
+        </LinearLayout>
+
+    </ScrollView>
+
+
+</FrameLayout>
+

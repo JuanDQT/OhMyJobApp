@@ -1,0 +1,106 @@
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".fragments.SelectTypeJobFragment"
+    android:background="@color/colorPrimary">
+
+    <RelativeLayout
+
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_gravity="right|bottom">
+
+        <ImageView
+            android:layout_width="65dp"
+            android:layout_height="65dp"
+            android:id="@+id/iv_horas"
+            android:src="@drawable/por_horas_icon"
+            android:scaleType="centerCrop"
+            android:layout_gravity="center_vertical"
+            android:layout_marginTop="27dp"
+            android:layout_below="@+id/textView18"
+            android:layout_alignStart="@+id/iv_convenir" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:text="SERVICIO"
+            android:id="@+id/textView18"
+            android:textColor="#FFF"
+            android:layout_below="@+id/iv_servicio"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="15dp"
+            android:textSize="20dp" />
+
+        <ImageView
+            android:layout_width="65dp"
+            android:layout_height="65dp"
+            android:id="@+id/iv_servicio"
+            android:src="@drawable/por_servicio_icon"
+            android:scaleType="centerCrop"
+            android:layout_marginTop="35dp"
+            android:layout_below="@+id/textView22"
+            android:layout_centerHorizontal="true" />
+
+        <ImageView
+            android:layout_width="65dp"
+            android:layout_height="65dp"
+            android:id="@+id/iv_convenir"
+            android:src="@drawable/a_convenir_icon"
+            android:scaleType="centerCrop"
+            android:layout_gravity="center_horizontal|bottom"
+            android:layout_marginTop="19dp"
+            android:layout_below="@+id/textView20"
+            android:layout_alignStart="@+id/iv_servicio" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:text="HORAS"
+            android:id="@+id/textView20"
+            android:textColor="#FFF"
+            android:layout_marginTop="15dp"
+            android:layout_below="@+id/iv_horas"
+            android:layout_alignStart="@+id/iv_horas"
+            android:textSize="20dp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:text="A CONVENIR"
+            android:id="@+id/textView21"
+            android:textColor="#FFF"
+            android:layout_below="@+id/iv_convenir"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="15dp"
+            android:textSize="20dp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:text="Programador Web"
+            android:id="@+id/tv_name_subcategory"
+            android:layout_marginTop="27dp"
+            android:layout_alignParentTop="true"
+            android:layout_centerHorizontal="true"
+            android:textSize="30dp"
+            android:textColor="#fff" />
+
+        <TextView
+            android:text="renumerado por"
+            android:textColor="#fff"
+            android:textSize="20dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/textView22"
+            android:layout_below="@+id/tv_name_subcategory"
+            android:layout_centerHorizontal="true" />
+    </RelativeLayout>
+
+
+</FrameLayout>
