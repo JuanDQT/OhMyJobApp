@@ -1,6 +1,8 @@
 package com.example.androiddam.proyectofinalandroid.fragments;
 
 
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
@@ -18,6 +20,8 @@ import android.widget.Toast;
 
 import com.example.androiddam.proyectofinalandroid.R;
 import com.example.androiddam.proyectofinalandroid.activities.AddOfferActivity;
+import com.example.androiddam.proyectofinalandroid.activities.SetLocationActivity;
+import com.example.androiddam.proyectofinalandroid.widgets.CircularAnim;
 import com.labo.kaji.fragmentanimations.MoveAnimation;
 
 import java.util.HashSet;
@@ -42,6 +46,7 @@ public class AddOfferFinish extends Fragment implements View.OnClickListener {
     private SeekBar sbExperience;
 
     private Button btnPush;
+    private Button btnLocation;
 
     private Set<Integer> dayList;
 
@@ -65,6 +70,8 @@ public class AddOfferFinish extends Fragment implements View.OnClickListener {
         btnPush = (Button) view.findViewById(R.id.btn_push);
         tvYears = (TextView) view.findViewById(R.id.tv_years);
         sbExperience = (SeekBar) view.findViewById(R.id.sb_experience);
+        btnLocation = (Button) view.findViewById(R.id.btn_location);
+        btnLocation = (Button) view.findViewById(R.id.btn_location);
         llLu.setOnClickListener(this);
         llMa.setOnClickListener(this);
         llMi.setOnClickListener(this);
@@ -73,7 +80,7 @@ public class AddOfferFinish extends Fragment implements View.OnClickListener {
         llSa.setOnClickListener(this);
         llDo.setOnClickListener(this);
         btnPush.setOnClickListener(this);
-
+        btnLocation.setOnClickListener(this);
         sbExperience.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
@@ -123,9 +130,26 @@ public class AddOfferFinish extends Fragment implements View.OnClickListener {
             case R.id.ll_do:
                 addToDayList(view);
                 break;
+            case R.id.btn_location:
+                final Intent intent = new Intent(getActivity(), SetLocationActivity.class);
+                CircularAnim.hide(btnLocation)
+                        .onAnimationEndListener(new CircularAnim.OnAnimationEndListener() {
+                            @Override
+                            public void onAnimationEnd() {
+                                CircularAnim.fullActivity(getActivity(), btnLocation).colorOrImageRes(R.color.colorAccent)
+                                        .go(new CircularAnim.OnAnimationEndListener() {
+                                            @Override
+                                            public void onAnimationEnd() {
+                                                startActivity(intent);
+                                                //finish();
+                                            }
+                                        });
+                            }
+                        }).go();
+                break;
             case R.id.btn_push:
-                Log.d("NORMAL", "DAYS: " + dayList);
-                showPupUp();
+                //Log.d("NORMAL", "DAYS: " + dayList);
+                //showPupUp();
                 break;
         }
 
@@ -133,8 +157,26 @@ public class AddOfferFinish extends Fragment implements View.OnClickListener {
 
     private void showPupUp() {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-        builder.setTitle("Desea");
+        builder.setTitle("Deseo mostrar");
 
+        View view =  LayoutInflater.from(getActivity()).inflate(R.layout.dialog_setup_offer, null);
+        builder.setView(view);
+
+        builder.setPositiveButton("CONTINUAR", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+
+            }
+        });
+
+        builder.setNegativeButton("CANCELAR", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                dialogInterface.cancel();
+            }
+        });
+
+        builder.show();
 
     }
 

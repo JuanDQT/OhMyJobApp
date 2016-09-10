@@ -292,14 +292,25 @@
         <Button
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Subir oferta"
-            android:id="@+id/btn_push"
+            android:text="Seleccionar ubicación"
+            android:id="@+id/btn_location"
             android:background="@drawable/border_login"
             android:textColor="#fff"
             android:layout_marginLeft="10dp"
             android:layout_marginRight="10dp"
             android:layout_marginTop="20dp" />
 
+        <Button
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Subir oferta"
+            android:id="@+id/btn_push"
+            android:background="@drawable/border_login"
+            android:textColor="#fff"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:visibility="gone"
+            android:layout_marginTop="20dp" />
     </LinearLayout>
 
 </FrameLayout>

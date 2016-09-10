@@ -1,7 +1,6 @@
 package com.example.androiddam.proyectofinalandroid.activities;
 
 import android.content.Context;
-import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Address;
 import android.location.Geocoder;
@@ -16,7 +15,6 @@ import android.view.View.OnClickListener;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.Toast;
 
 import com.example.androiddam.proyectofinalandroid.R;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -51,7 +49,7 @@ public class SetLocationActivity extends FragmentActivity implements OnMapReadyC
     private double lat;
     private double lng;
 
-    private FloatingActionButton fab;
+    private FloatingActionButton fabMyLocation;
 
     private void hideSoftKeyboard(){
         if(getCurrentFocus()!=null && getCurrentFocus() instanceof EditText){
@@ -65,9 +63,9 @@ public class SetLocationActivity extends FragmentActivity implements OnMapReadyC
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_set_location);
 
-        geocoder = new Geocoder(getApplicationContext());
+        geocoder = new Geocoder(this);
 
-        fab = (FloatingActionButton) findViewById(R.id.fab);
+        fabMyLocation = (FloatingActionButton) findViewById(R.id.fab_my_location);
 
         // Getting reference to the find button
         mBtnFind = (Button) findViewById(R.id.btn_show);
@@ -172,8 +170,8 @@ public class SetLocationActivity extends FragmentActivity implements OnMapReadyC
             }
         });
 
-
-        fab.setOnClickListener(new View.OnClickListener() {
+/*
+        fabMyLocation.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 if (hasMarker){
                     System.out.println("SAPEEEEEEEEEEEEEEEEEEEEEEEEEEEE");
@@ -195,7 +193,7 @@ public class SetLocationActivity extends FragmentActivity implements OnMapReadyC
 
                 finish();
             }
-        });
+        });*/
 
     }
 

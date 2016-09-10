@@ -5,7 +5,7 @@
     android:layout_height="match_parent"
     tools:context="com.example.androiddam.proyectofinalandroid.activities.SetLocationActivity"
     android:paddingTop="10dp"
-    android:background="#39686E">
+    android:background="@color/colorPrimary">
 
 
     <LinearLayout
@@ -23,12 +23,13 @@
             android:id="@+id/et_place"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:hint="Introduce ubicación"
+            android:hint="Introduce una ubicación"
             android:inputType="text"
             android:paddingBottom="10dp"
             android:layout_below="@+id/textView2"
             android:layout_alignParentStart="true"
             android:layout_weight="0.70"
+            android:textColor="#fff"
             android:textColorHint="#FFF" />
 
         <Button
@@ -36,9 +37,11 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Buscar"
+            android:textColor="#fff"
             android:layout_alignTop="@+id/et_place"
             android:layout_alignParentEnd="true"
-            android:background="#7f010101" />
+            android:elevation="0dp"
+            android:background="@color/colorAccent" />
     </LinearLayout>
 
     <fragment
@@ -51,7 +54,7 @@
 
     <android.support.design.widget.FloatingActionButton
         app:fabSize="normal"
-        android:id="@+id/fab"
+        android:id="@+id/fab_my_location"
         android:layout_width="250dp"
         android:layout_height="200dp"
         android:layout_margin="@dimen/fab_margin"
