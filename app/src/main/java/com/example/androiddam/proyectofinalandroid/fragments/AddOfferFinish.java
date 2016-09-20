@@ -16,15 +16,23 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.SeekBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
+import com.android.volley.AuthFailureError;
+import com.android.volley.Request;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.StringRequest;
 import com.example.androiddam.proyectofinalandroid.R;
 import com.example.androiddam.proyectofinalandroid.activities.AddOfferActivity;
+import com.example.androiddam.proyectofinalandroid.activities.HomeActivity;
 import com.example.androiddam.proyectofinalandroid.activities.SetLocationActivity;
+import com.example.androiddam.proyectofinalandroid.controllers.MySingleton;
 import com.example.androiddam.proyectofinalandroid.widgets.CircularAnim;
 import com.labo.kaji.fragmentanimations.MoveAnimation;
 
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
 /**
@@ -49,6 +57,31 @@ public class AddOfferFinish extends Fragment implements View.OnClickListener {
     private Button btnLocation;
 
     private Set<Integer> dayList;
+
+    public static int categoryId;
+    public static String nameOffer;
+    public static int price = 0;
+    public static int typeService;
+
+    public static final String REGISTER_URL = "http://proyecto-dam.esy.es/php/uploadOfferV2.php";
+
+    public static final String KEY_ID_USER = "user_id";
+    public static final String KEY_NAME = "name";
+    public static final String KEY_DESCRIPTION = "description";
+    public static final String KEY_CATEGORY = "category";
+    public static final String KEY_PRICE = "price";
+    public static final String KEY_ZIPCODE = "zipcode";
+    public static final String KEY_LATITUDE = "latitude";
+    public static final String KEY_LONGITUDE = "longitude";
+    public static final String KEY_LOCATION = "location";
+    public static final String KEY_EXPERIENCE = "experience";
+
+    private String location;
+    private String zipcode;
+    private double lat;
+    private double lng;
+    private int experience = 0;
+    private String userId;
 
     public AddOfferFinish() {
         // Required empty public constructor
@@ -81,10 +114,21 @@ public class AddOfferFinish extends Fragment implements View.OnClickListener {
         llDo.setOnClickListener(this);
         btnPush.setOnClickListener(this);
         btnLocation.setOnClickListener(this);
+
+        Bundle bundle = getArguments();
+        this.categoryId = bundle.getInt("idCategory");
+        this.nameOffer = bundle.getString("nameOffer");
+        this.price = bundle.getInt("price");
+        this.typeService = bundle.getInt("typeService");
+
+        //Toast.makeText(getActivity(), "NAME OFFER: "+ nameOffer + "\tID CATEGORY: "+ categoryId + "\tPRCICE: "+ price + "\tTYPE_SERVICE: "+ typeService, Toast.LENGTH_SHORT).show();
+
+
         sbExperience.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
                 Log.d("NORMAL","ONSTART: " + i);
+                experience = i;
                 tvYears.setText(String.valueOf(i));
             }
             @Override
@@ -103,7 +147,6 @@ public class AddOfferFinish extends Fragment implements View.OnClickListener {
 
     @Override
     public Animation onCreateAnimation(int transit, boolean enter, int nextAnim) {
-        Log.d("MOVE", "HPLI SELECTYPE...");
 
         if (AddOfferActivity.derecha) {
             AddOfferActivity.derecha = false;
@@ -140,7 +183,7 @@ public class AddOfferFinish extends Fragment implements View.OnClickListener {
                                         .go(new CircularAnim.OnAnimationEndListener() {
                                             @Override
                                             public void onAnimationEnd() {
-                                                startActivity(intent);
+                                                startActivityForResult(intent,1);
                                                 //finish();
                                             }
                                         });
@@ -149,7 +192,7 @@ public class AddOfferFinish extends Fragment implements View.OnClickListener {
                 break;
             case R.id.btn_push:
                 //Log.d("NORMAL", "DAYS: " + dayList);
-                //showPupUp();
+                showPupUp();
                 break;
         }
 
@@ -165,6 +208,8 @@ public class AddOfferFinish extends Fragment implements View.OnClickListener {
         builder.setPositiveButton("CONTINUAR", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
+                uploadOffer();
+                ((AddOfferActivity) getContext()).goFinishFragment();
 
             }
         });
@@ -180,11 +225,48 @@ public class AddOfferFinish extends Fragment implements View.OnClickListener {
 
     }
 
+    private void uploadOffer() {
+        StringRequest stringRequest = new StringRequest(Request.Method.POST, REGISTER_URL,
+                new Response.Listener<String>() {
+
+                    @Override
+                    public void onResponse(String response) {
+                        Log.d("NORMAL", response);
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        //Toast.makeText(AddWorkActivity.this, error.toString(), Toast.LENGTH_LONG).show();
+                    }
+                }) {
+            @Override
+            protected Map<String, String> getParams() throws AuthFailureError {
+                Map<String, String> map = new HashMap<String, String>();
+                map.put(KEY_ID_USER, String.valueOf(HomeActivity.getUserId(getContext())));
+                map.put(KEY_DESCRIPTION, etDescription.getText().toString());
+                map.put(KEY_CATEGORY, String.valueOf(categoryId));
+                map.put(KEY_NAME, nameOffer);
+                map.put(KEY_PRICE, String.valueOf(price));
+                map.put(KEY_ZIPCODE, zipcode);
+                map.put(KEY_LOCATION, location);
+                map.put(KEY_LONGITUDE, String.valueOf(lng));
+                map.put(KEY_LATITUDE, String.valueOf(lat));
+                map.put(KEY_EXPERIENCE, String.valueOf(experience));
+
+
+                return map;
+            }
+        };
+
+        MySingleton.getInstance(getContext()).addToRequestQueue(stringRequest);
+    }
+
     private void addToDayList(View view) {
         LinearLayout linearLayout = (LinearLayout)view;
         TextView tvDayId = (TextView) ((LinearLayout) view).getChildAt(1);
         int dayId = Integer.parseInt(tvDayId.getText().toString());
-        Toast.makeText(getActivity(), "ID: "+ dayId, Toast.LENGTH_SHORT).show();
+        //Toast.makeText(getActivity(), "ID: "+ dayId, Toast.LENGTH_SHORT).show();
         if (!dayList.contains(dayId)){
             dayList.add(dayId);
             linearLayout.setBackgroundColor( getResources().getColor(R.color.colorAccent));
@@ -195,4 +277,30 @@ public class AddOfferFinish extends Fragment implements View.OnClickListener {
         }
 
     }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        // Comprobamos si el resultado de la segunda actividad es "RESULT_CANCELED".
+        if (resultCode == 0) {
+            // Si es así mostramos mensaje de cancelado por pantalla.
+            //Toast.makeText(this, "Resultado cancelado", Toast.LENGTH_SHORT).show();
+        } else {
+            // De lo contrario, recogemos el resultado de la segunda actividad.
+            Bundle extras = data.getExtras();
+            //adressLine = extras.getString("line");
+            location = extras.getString("location");
+            zipcode = extras.getString("zipcode");
+            lat = extras.getDouble("lat");
+            lng = extras.getDouble("lng");
+
+            Log.d("NORMAL", "LAT: "+ lat + "\tLONG: "+ lng + "\tZIPCODE: "+ zipcode + "\tLOCALITY: "+ location);
+            btnLocation.setVisibility(View.GONE);
+            btnPush.setVisibility(View.VISIBLE);
+
+
+        }
+    }
+
+
 }

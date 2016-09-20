@@ -111,20 +111,6 @@ public class AddOfferFragment extends Fragment {
         return MoveAnimation.create(MoveAnimation.RIGHT, enter, 500);
     }
 
-/*    @Override
-    public Animation onCreateAnimation(int transit, boolean enter, int nextAnim) {
-        Toast.makeText(getActivity(), "HOLI DESDE AddOfferFragment", Toast.LENGTH_SHORT).show();
-        if (AddOfferActivity.izquierda) {
-            AddOfferActivity.izquierda = false;
-            return MoveAnimation.create(MoveAnimation.LEFT, enter, 500);
-        }
-        if (AddOfferActivity.init) {
-            AddOfferActivity.init = false;
-            return null;
-        }
-
-        return MoveAnimation.create(MoveAnimation.RIGHT, enter, 500);
-    }*/
 
 
 

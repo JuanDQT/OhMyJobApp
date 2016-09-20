@@ -22,7 +22,7 @@
             android:background="#000"
             android:layout_alignParentTop="true"
             android:layout_alignParentStart="true"
-            android:scaleType="fitXY" />
+            android:scaleType="centerCrop" />
 
         <de.hdodenhof.circleimageview.CircleImageView
             android:layout_width="125dp"
@@ -35,6 +35,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:id="@+id/tv_names"
+            android:textColor="#fff"
             android:layout_marginTop="165dp"
             android:gravity="center_horizontal"
             android:textSize="30dp" />
@@ -51,17 +52,19 @@
             android:layout_width="192dp"
             android:layout_height="match_parent"
             android:gravity="center_vertical|center_horizontal"
-            android:background="#39686E">
+            android:background="@color/colorPrimary">
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:textColor="#fff"
                 android:id="@+id/tv_contacts"
                 android:textSize="50dp" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:textColor="#fff"
                 android:text="contactos"
                 android:id="@+id/textView5" />
         </LinearLayout>
@@ -71,18 +74,21 @@
             android:layout_width="192dp"
             android:layout_height="match_parent"
             android:gravity="center_vertical|center_horizontal"
-            android:background="#39686E">
+            android:background="@color/colorPrimary">
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:id="@+id/tv_puntos"
+                android:textColor="#fff"
                 android:textSize="50dp" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="puntos"
+                android:textColor="#fff"
+
                 android:id="@+id/textView7" />
         </LinearLayout>
     </LinearLayout>
@@ -105,6 +111,7 @@
                 android:id="@+id/tv_description"
                 android:paddingLeft="10dp"
                 android:paddingRight="10dp"
+
                 android:textSize="20dp" />
         </ScrollView>
 

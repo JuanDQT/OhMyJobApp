@@ -12,6 +12,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
+import android.widget.Toast;
 
 import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
@@ -346,6 +347,8 @@ public class AddWorkActivity extends AppCompatActivity implements View.OnClickLi
             zipcode = extras.getString("zipcode");
             lat = extras.getDouble("lat");
             lng = extras.getDouble("lng");
+
+            Toast.makeText(AddWorkActivity.this, "LAT: "+ lat + "\tLONG: "+ lng + "\tZIPCODE: "+ zipcode + "\tLOCATION: "+ locality, Toast.LENGTH_SHORT).show();
 
             editTextZipcode.setText(adressLine);
 

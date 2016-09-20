@@ -1,6 +1,7 @@
 package com.example.androiddam.proyectofinalandroid.activities;
 
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Matrix;
@@ -362,6 +363,7 @@ public class HomeActivity extends AppCompatActivity {
         });
 
 
+        sv_buscador = (SearchView) findViewById(R.id.sv_buscador);
 
         /*
         sv_buscador = (SearchView) this.findViewById(R.id.sv_buscador);
@@ -376,9 +378,12 @@ public class HomeActivity extends AppCompatActivity {
         });*/
 
 /*
+
         sv_buscador.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
+                Log.d("NORMAL", "ENTER");
+
                 //System.out.println("TEXTSUBMIT: "+ query);
                 //enter
                 return false;
@@ -386,7 +391,7 @@ public class HomeActivity extends AppCompatActivity {
 
             @Override
             public boolean onQueryTextChange(final String newText) {
-
+                Log.d("NORMAL", "CAMBIA");
                 JsonArrayRequest jsonCustomSearch = null;
 
                 if (newText.isEmpty()|| newText.length()==0) {
@@ -396,7 +401,7 @@ public class HomeActivity extends AppCompatActivity {
                     JsonArrayRequest defaultSearch =  new JsonArrayRequest(Request.Method.POST, URL_OFFERS, null, new Response.Listener<JSONArray>() {
                         @Override
                         public void onResponse(JSONArray response) {
-
+                            Log.d("NORMAL", "LLEGO RESPONSE");
                             try {
                                 for (int i=0;i<response.length();i++) {
                                     JSONObject jsonObject = response.getJSONObject(i);
@@ -407,7 +412,7 @@ public class HomeActivity extends AppCompatActivity {
                                     System.out.println("SUBCATE: "+ jsonObject.getString("name_category"));
                                     String img_path = jsonObject.getString("img_path");
 
-                                    ofertaList.add(new Oferta(jsonObject.getInt("id_offer"),jsonObject.getInt("price"),jsonObject.getString("name_category"),img_path,jsonObject.getInt("rating"), CATEGORIES_IMAGE_URL+jsonObject.getString("category")+ ".png"));
+                                    ofertaList.add(new Oferta(jsonObject.getInt("id_offer"),jsonObject.getInt("price"),jsonObject.getString("name_category"),img_path,jsonObject.getInt("rating"), jsonObject.getString("img_path")));
 
                                     System.out.println("**********************");
 
@@ -451,7 +456,7 @@ public class HomeActivity extends AppCompatActivity {
                                     String img_path = jsonObject.getString("img_path");
 
                                     //ofertaList.add(new Oferta(jsonObject.getInt("id_offer"), jsonObject.getInt("price"), jsonObject.getString("name_category"), SubCategory.valueOf(subcategory.toUpperCase().replace(" ", "_")), img_path, jsonObject.getInt("rating")));
-                                    ofertaList.add(new Oferta(jsonObject.getInt("id_offer"),jsonObject.getInt("price"),jsonObject.getString("name_category"),img_path,jsonObject.getInt("rating"), CATEGORIES_IMAGE_URL+jsonObject.getString("category")+ ".png"));
+                                    ofertaList.add(new Oferta(jsonObject.getInt("id_offer"),jsonObject.getInt("price"),jsonObject.getString("name_category"),img_path,jsonObject.getInt("rating"), jsonObject.getString("img_path")));
 
                                     System.out.println("**********************");
 
@@ -497,7 +502,8 @@ public class HomeActivity extends AppCompatActivity {
                 return false;
             }
         });
-        */
+
+*/
 
         if (MainActivity.get_json(getApplicationContext())!=null) {
 
@@ -754,11 +760,11 @@ public class HomeActivity extends AppCompatActivity {
 
     }
 
-    protected int getUserId(){
+    public static int getUserId(Context c){
         JSONObject json = null;
         int user_id = 0;
         try {
-            json = new JSONObject(MainActivity.get_json(getApplicationContext()));
+            json = new JSONObject(MainActivity.get_json(c));
             user_id = json.getInt("id");
 
         } catch (JSONException e) {

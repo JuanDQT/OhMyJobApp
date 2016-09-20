@@ -14,7 +14,6 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
@@ -112,7 +111,8 @@ public class OfferShowActivity extends FragmentActivity implements OnMapReadyCal
 
         byte[] byteArray = getIntent().getByteArrayExtra("img_header");
         Bitmap bmp = BitmapFactory.decodeByteArray(byteArray, 0, byteArray.length);
-        //Bitmap bmp = getIntent().getParcelableExtra("img_header");
+
+
 
         iv_header.setImageBitmap(bmp);
 
@@ -153,10 +153,10 @@ public class OfferShowActivity extends FragmentActivity implements OnMapReadyCal
 
                 ivHideMap.setVisibility(View.VISIBLE);
 
-                Log.i("ESTADO", "BANANERO GARKA");
-                Toast.makeText(OfferShowActivity.this, "peluca sape", Toast.LENGTH_SHORT).show();
+                //Log.i("ESTADO", "BANANERO GARKA");
+                //Toast.makeText(OfferShowActivity.this, "peluca sape", Toast.LENGTH_SHORT).show();
                 if (!jsonOffer.isNull("lat") && !jsonOffer.isNull("lng")) {
-                    Toast.makeText(OfferShowActivity.this, "ENTRE GARKA", Toast.LENGTH_SHORT).show();
+                    //Toast.makeText(OfferShowActivity.this, "ENTRE GARKA", Toast.LENGTH_SHORT).show();
 
 
                     try {

@@ -8,15 +8,14 @@ import android.support.v7.app.AlertDialog;
 import android.text.Editable;
 import android.text.InputType;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.view.animation.Animation;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.Toast;
 
 import com.example.androiddam.proyectofinalandroid.R;
 import com.example.androiddam.proyectofinalandroid.activities.AddOfferActivity;
@@ -32,7 +31,13 @@ public class SelectTypeJobFragment extends Fragment implements View.OnClickListe
     private ImageView ivConvenir;
     AlertDialog alertDialog;
 
-    private static int price = 0;
+    public static int categoryId;
+    public static String nameOffer;
+    public static int price = 0;
+
+    private static final int PRICE_SERVICE = 0;
+    private static final int PRICE_HOURS = 1;
+    private static final int PRICE_UNKNOWN = 2;
 
     public SelectTypeJobFragment() {
         // Required empty public constructor
@@ -52,15 +57,11 @@ public class SelectTypeJobFragment extends Fragment implements View.OnClickListe
         ivConvenir.setOnClickListener(this);
 
 
-/*
-        Animation grow_animation_reference = AnimationUtils.loadAnimation(getActivity(), R.anim.grow_animation);
-        AnimationSet growAnimation = new AnimationSet(true);
-        growAnimation.addAnimation(grow_animation_reference);
+        Bundle bundle = getArguments();
 
-        ivServicio.startActionMode(growAnimation);
-        ivHoras.startActionMode(a);
-        ivConvenir.startActionMode(a);
-*/
+        this.categoryId = bundle.getInt("idCategory");
+        this.nameOffer = bundle.getString("nameOffer");
+
 
 
         view.setOnTouchListener(new View.OnTouchListener() {
@@ -76,7 +77,6 @@ public class SelectTypeJobFragment extends Fragment implements View.OnClickListe
 
     @Override
     public Animation onCreateAnimation(int transit, boolean enter, int nextAnim) {
-        Log.d("MOVE", "HPLI SELECTYPE...");
 
         if (AddOfferActivity.derecha){
             AddOfferActivity.derecha = false;
@@ -92,7 +92,7 @@ public class SelectTypeJobFragment extends Fragment implements View.OnClickListe
     }
 
 
-    public void setPricePopUp(String customDescrtiption){
+    public void setPricePopUp(String customDescrtiption, final int typeOffer){
         final AlertDialog.Builder alertdialog_builder = new AlertDialog.Builder(getActivity());
         alertdialog_builder.setTitle("Precio");
         alertdialog_builder.setMessage(customDescrtiption);
@@ -101,12 +101,11 @@ public class SelectTypeJobFragment extends Fragment implements View.OnClickListe
         etPrice.setInputType(InputType.TYPE_CLASS_NUMBER);
         alertdialog_builder.setView(view);
 
-
-
         alertdialog_builder.setPositiveButton("CONTINUAR", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
                 price = Integer.parseInt(etPrice.getText().toString());
+                ((AddOfferActivity) getContext()).goFinishUploadNewJob(nameOffer, categoryId, price, typeOffer);
             }
         });
 
@@ -126,13 +125,19 @@ public class SelectTypeJobFragment extends Fragment implements View.OnClickListe
             @Override
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
 
-                if ( !charSequence.toString().isEmpty() &&Integer.valueOf(charSequence.toString())>0)
+                if ( !charSequence.toString().isEmpty() &&Integer.valueOf(charSequence.toString())>0){
                     alertDialog.getButton(AlertDialog.BUTTON_POSITIVE).setEnabled(true);
+                    if (charSequence.toString().length()>4){
+                        etPrice.setFocusable(false);
+                    }else{
+                        etPrice.setFocusableInTouchMode(true);
+                    }
+
+                }
                 else
                     alertDialog.getButton(AlertDialog.BUTTON_POSITIVE).setEnabled(false);
 
 
-                Log.d("NORMAL", charSequence.toString());
             }
 
             @Override
@@ -144,25 +149,31 @@ public class SelectTypeJobFragment extends Fragment implements View.OnClickListe
         alertDialog = alertdialog_builder.create();
         alertDialog.show();
         alertDialog.getButton(AlertDialog.BUTTON_POSITIVE).setEnabled(false);
-
+        openKeyboard(alertDialog);
     }
 
     @Override
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.iv_servicio:
-                setPricePopUp("Introduce el precio que deseas cobrar por el servicio");
+                setPricePopUp("Introduce el precio que deseas cobrar por el servicio", PRICE_SERVICE);
                 break;
             case R.id.iv_horas:
-                setPricePopUp("Introduce el precio que deseas cobrar por hora");
+                setPricePopUp("Introduce el precio que deseas cobrar por hora",PRICE_HOURS );
                 break;
             case R.id.iv_convenir:
-                ((AddOfferActivity) getContext()).goFinishUploadNewJob(price);
+                price = 0;
+                ((AddOfferActivity) getContext()).goFinishUploadNewJob(nameOffer, categoryId, 0, PRICE_UNKNOWN);
                 break;
 
         }
 
-        Toast.makeText(getActivity(), "NEXT. PRICE:  " + price, Toast.LENGTH_SHORT).show();
+        //Toast.makeText(getActivity(), "NEXT. PRICE:  " + price, Toast.LENGTH_SHORT).show();
 
+    }
+
+    private void openKeyboard(AlertDialog alertDialog){
+        alertDialog.getWindow().setSoftInputMode(
+                WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE);
     }
 }

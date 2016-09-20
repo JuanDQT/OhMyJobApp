@@ -10,7 +10,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.SearchView;
-import android.widget.Toast;
 
 import com.android.volley.Request;
 import com.android.volley.Response;
@@ -54,7 +53,7 @@ public class AddSubcategoryFragment extends Fragment {
         //
         Bundle bundle = getArguments();
         this.category_id = bundle.getInt("id_category_parent");
-        Toast.makeText(getActivity(), "PARAMS: " + String.valueOf(category_id), Toast.LENGTH_SHORT).show();
+        //Toast.makeText(getActivity(), "CATEGORY IDZ: " + String.valueOf(category_id), Toast.LENGTH_SHORT).show();
         //
         rvItems = (RecyclerView) view.findViewById(R.id.rv_items);
         svSearch = (SearchView) view.findViewById(R.id.sv_search);
@@ -71,8 +70,6 @@ public class AddSubcategoryFragment extends Fragment {
             @Override
             public boolean onQueryTextChange(String newText) {
                 ArrayList<ItemOfferSubcategoryModel> options = new ArrayList<>();
-                Toast.makeText(getActivity(), "FELIX SAPE", Toast.LENGTH_SHORT).show();
-                //Log.d("KEY", "TAMANO ITEM SEARCH: " + items_search.size());
 
                 Iterator<ItemOfferSubcategoryModel> itemOfferSubcategoryModelIterator = items.iterator();
 
@@ -113,7 +110,6 @@ public class AddSubcategoryFragment extends Fragment {
                     for (int i = 0; i<jsonArray.length();i++) {
                         JSONObject jsonObject = jsonArray.getJSONObject(i);
                         ItemOfferSubcategoryModel itemService = new ItemOfferSubcategoryModel(jsonObject.getInt("id_category"), jsonObject.getString("name_category"), jsonObject.getString("img")) ;
-                        Log.e("INFO","HOLI CHOCHETE");
                         items.add(itemService );
                     }
                     //items_search = new ArrayList<>(items);

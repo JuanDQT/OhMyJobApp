@@ -30,7 +30,7 @@ import de.hdodenhof.circleimageview.CircleImageView;
  * Created by Juan on 22/03/2016.
  */
 
-public class OfertaAdapter extends RecyclerView.Adapter<OfertaAdapter.ViewHolder>{
+public class OfertaAdapter extends RecyclerView.Adapter<OfertaAdapter.ViewHolder> {
 
     public List<Oferta> ofertaList;
     private final Activity context;
@@ -66,51 +66,58 @@ public class OfertaAdapter extends RecyclerView.Adapter<OfertaAdapter.ViewHolder
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Bitmap mbitmap_header = ((BitmapDrawable)iv_background.getDrawable()).getBitmap();
 
                     //LE PASAMOS EL NOMBRE DE LA CATEGORIA, NUM ESTRELLAS, PRECIO, FOTO PERFIL
                     Intent i = new Intent(v.getContext(), OfferShowActivity.class);
                     Bundle b = new Bundle();
+                    b.putString("id_offer", tv_id.getText().toString());
 
 
-                    b.putString("id_offer",tv_id.getText().toString());
+/*                    Transition fade = new Fade();
+                    fade.excludeTarget(android.R.id.statusBarBackground, true);
+                    fade.excludeTarget(android.R.id.navigationBarBackground, true);
+                    context.getWindow().setExitTransition(fade);
+                    context.getWindow().setEnterTransition(fade);*/
 
-                    //
+
+                    Bitmap mbitmap_header = ((BitmapDrawable) iv_background.getDrawable()).getBitmap();
                     ByteArrayOutputStream stream = new ByteArrayOutputStream();
                     mbitmap_header.compress(Bitmap.CompressFormat.PNG, 100, stream);
                     byte[] byteArray = stream.toByteArray();
-                    //
+
+
+                    ///i.putExtra("img_header", byteArray);
 
                     i.putExtra("img_header", byteArray);
-                    //i.putExtra("img_header", mbitmap_header);
                     i.putExtras(b);
-                    //
-/*                    ActivityOptions options = ActivityOptions.makeSceneTransitionAnimation(
+                    /*
+                            ActivityOptions options = ActivityOptions.makeSceneTransitionAnimation(
                             context, new Pair(tv_name, "tn_name_offer"),
-                            new Pair(civ_profile, "tn_image_profile"));*/
+                            new Pair(civ_profile, "tn_image_profile"));
+                    */
 
 
-                    ActivityOptions options = ActivityOptions.makeSceneTransitionAnimation(
-                            context, new Pair(iv_background,"tn_header"));
+                    ActivityOptions activityOptions = ActivityOptions.makeSceneTransitionAnimation(
+                            context, new Pair(iv_background, "tn_header"));
                     //
 
-                    context.startActivity(i,options.toBundle());
+                    context.startActivity(i, activityOptions.toBundle());
                 }
             });
         }
 
-        public void bindLista(Oferta oferta){
+        public void bindLista(Oferta oferta) {
             tv_name.setText(oferta.getName());
             tv_price.setText(String.valueOf(oferta.getPrice()) + "€");
             tv_id.setText(String.valueOf(oferta.getId()));
 
 
-            if (oferta.getPic_profile().length()>0) {
+            if (oferta.getPic_profile().length() > 0) {
                 Picasso.with(context).load(oferta.getPic_profile()).memoryPolicy(MemoryPolicy.NO_CACHE).transform(new CircleTransform()).into(civ_profile);
-            }else
+            } else
                 civ_profile.setImageResource(R.drawable.new_user);
 
-            if (oferta.getRating() !=null||oferta.getRating()>0) {
+            if (oferta.getRating() != null || oferta.getRating() > 0) {
 
                 for (int i = 0; i < oferta.getRating(); i++) {
                     stars[i].setVisibility(View.VISIBLE);
