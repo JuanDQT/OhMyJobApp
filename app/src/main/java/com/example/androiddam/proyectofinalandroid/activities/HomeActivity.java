@@ -172,6 +172,7 @@ public class HomeActivity extends AppCompatActivity {
 
         System.out.println("LECHERO");
 
+
         if (MainActivity.get_json(getApplicationContext())!=null) {
 
             //ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawerLayout, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
@@ -364,7 +365,7 @@ public class HomeActivity extends AppCompatActivity {
 
 
         sv_buscador = (SearchView) findViewById(R.id.sv_buscador);
-
+        //sv_buscador.setDrawingCacheBackgroundColor(Color.WHITE);
         /*
         sv_buscador = (SearchView) this.findViewById(R.id.sv_buscador);
 
@@ -377,7 +378,7 @@ public class HomeActivity extends AppCompatActivity {
             }
         });*/
 
-/*
+
 
         sv_buscador.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
@@ -391,17 +392,17 @@ public class HomeActivity extends AppCompatActivity {
 
             @Override
             public boolean onQueryTextChange(final String newText) {
-                Log.d("NORMAL", "CAMBIA");
-                JsonArrayRequest jsonCustomSearch = null;
+                Log.d("SEARCHVIEW", "CAMBIA");
 
                 if (newText.isEmpty()|| newText.length()==0) {
                     ofertaList.clear();
                     recyclerView.setAdapter(null);
                     //VOLVEMOS A CARGAR LA LISTA DE OFERTAS
-                    JsonArrayRequest defaultSearch =  new JsonArrayRequest(Request.Method.POST, URL_OFFERS, null, new Response.Listener<JSONArray>() {
+                    JsonArrayRequest defaultSearch =  new JsonArrayRequest(Request.Method.POST, SEARCH_URL, null, new Response.Listener<JSONArray>() {
                         @Override
                         public void onResponse(JSONArray response) {
-                            Log.d("NORMAL", "LLEGO RESPONSE");
+                            Log.d("SEARCHVIEW", "LLEGO RESPONSE");
+                            Log.d("SEARCHVIEW", "" + response);
                             try {
                                 for (int i=0;i<response.length();i++) {
                                     JSONObject jsonObject = response.getJSONObject(i);
@@ -411,10 +412,10 @@ public class HomeActivity extends AppCompatActivity {
                                     String subcategory = jsonObject.getString("name_category");
                                     System.out.println("SUBCATE: "+ jsonObject.getString("name_category"));
                                     String img_path = jsonObject.getString("img_path");
+                                    ofertaList.add(new Oferta(jsonObject.getInt("id_offer"),jsonObject.getInt("price"),jsonObject.getString("name_category"),img_path,jsonObject.getInt("rating"), jsonObject.getString("img") ));
 
-                                    ofertaList.add(new Oferta(jsonObject.getInt("id_offer"),jsonObject.getInt("price"),jsonObject.getString("name_category"),img_path,jsonObject.getInt("rating"), jsonObject.getString("img_path")));
+                                    //ofertaList.add(new Oferta(jsonObject.getInt("id_offer"),jsonObject.getInt("price"),jsonObject.getString("name_category"),img_path,jsonObject.getInt("rating"), jsonObject.getString("img")));
 
-                                    System.out.println("**********************");
 
 
                                 }
@@ -437,42 +438,41 @@ public class HomeActivity extends AppCompatActivity {
 
                     MySingleton.getInstance(getApplicationContext()).addToRequestQueue(defaultSearch);
                 }else{
+                    Log.d("SEARCHVIEW", "ELSE");
 
                     //
-                    jsonCustomSearch = new JsonArrayRequest(Request.Method.POST, SEARCH_URL, null, new Response.Listener<JSONArray>() {
+                    JsonArrayRequest jsonCustomSearch = new JsonArrayRequest(Request.Method.POST, SEARCH_URL, null, new Response.Listener<JSONArray>() {
                         @Override
                         public void onResponse(JSONArray response) {
                             ofertaList.clear();
                             recyclerView.setAdapter(null);
+                            Log.d("SEARCHVIEW", response.toString());
 
                             try {
-                                for (int i = 0; i < response.length(); i++) {
+                                for (int i=0;i<response.length();i++) {
                                     JSONObject jsonObject = response.getJSONObject(i);
                                     String name = jsonObject.getString("name_offer");
-                                    System.out.println("OFERTA NAME: " + name);
+                                    System.out.println("OFERTA NAME: "+ name);
 
                                     String subcategory = jsonObject.getString("name_category");
-                                    System.out.println("SUBCATE: " + jsonObject.getString("name_category"));
+                                    System.out.println("SUBCATE: "+ jsonObject.getString("name_category"));
                                     String img_path = jsonObject.getString("img_path");
 
-                                    //ofertaList.add(new Oferta(jsonObject.getInt("id_offer"), jsonObject.getInt("price"), jsonObject.getString("name_category"), SubCategory.valueOf(subcategory.toUpperCase().replace(" ", "_")), img_path, jsonObject.getInt("rating")));
-                                    ofertaList.add(new Oferta(jsonObject.getInt("id_offer"),jsonObject.getInt("price"),jsonObject.getString("name_category"),img_path,jsonObject.getInt("rating"), jsonObject.getString("img_path")));
+                                    //ofertaList.add(new Oferta(jsonObject.getInt("id_offer"),jsonObject.getInt("price"),jsonObject.getString("name_category"), SubCategory.valueOf(subcategory.toUpperCase().replace(" ", "_")),img_path,jsonObject.getInt("rating")));
+                                    ofertaList.add(new Oferta(jsonObject.getInt("id_offer"),jsonObject.getInt("price"),jsonObject.getString("name_category"),img_path,jsonObject.getInt("rating"), jsonObject.getString("img") ));
 
                                     System.out.println("**********************");
 
 
                                 }
 
-                                //Toast.makeText(HomeActivity.this, "SYZE: " + ofertaList.size(), Toast.LENGTH_SHORT).show();
-
+                                System.out.println("ESTE MIDE: "+ ofertaList.size());
                                 ofertaAdapter = new OfertaAdapter(ofertaList, HomeActivity.this);//CASTEARLO
-                                //Toast.makeText(HomeActivity.this, "ADAPTER COUNT: " + ofertaAdapter.getItemCount(), Toast.LENGTH_SHORT).show();
-
                                 recyclerView.setAdapter(ofertaAdapter);
-
+                                ofertaAdapter.notifyDataSetChanged();
                             } catch (JSONException e) {
                                 e.printStackTrace();
-                                Log.e("user", e.getMessage());
+                                Log.e("user",e.getMessage());
                             }
                         }
                     }, new Response.ErrorListener() {
@@ -483,10 +483,9 @@ public class HomeActivity extends AppCompatActivity {
                     }) {
                         @Override
                         protected Map<String, String> getParams() throws AuthFailureError {
-                            Map<String, String> params = new Hashtable<String, String>();
-
-                            //Adding parameters
+                            Map<String, String> params = new Hashtable<>();
                             params.put("word", newText);
+                            Log.d("SEACHVIEW", "BUSCAR: " + newText);
                             return params;
                         }
                     };
@@ -503,7 +502,7 @@ public class HomeActivity extends AppCompatActivity {
             }
         });
 
-*/
+
 
         if (MainActivity.get_json(getApplicationContext())!=null) {
 

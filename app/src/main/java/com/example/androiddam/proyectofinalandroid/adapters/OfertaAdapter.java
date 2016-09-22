@@ -35,6 +35,93 @@ public class OfertaAdapter extends RecyclerView.Adapter<OfertaAdapter.ViewHolder
     public List<Oferta> ofertaList;
     private final Activity context;
 
+
+    public OfertaAdapter(ArrayList<Oferta> ofertaList, Activity context) {
+        this.ofertaList = ofertaList;
+        this.context = context;
+    }
+
+    @Override
+    public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.label_oferta, parent, false);
+
+        return new ViewHolder(view);
+    }
+
+    @Override
+    public void onBindViewHolder(final ViewHolder holder, int position) {
+        holder.tv_name.setText(ofertaList.get(position).getName());
+        holder.tv_price.setText(String.valueOf(ofertaList.get(position).getPrice()) + "€");
+        holder.tv_id.setText(String.valueOf(ofertaList.get(position).getId()));
+
+
+        if (ofertaList.get(position).getPic_profile().length() > 0) {
+            Picasso.with(context).load(ofertaList.get(position).getPic_profile()).memoryPolicy(MemoryPolicy.NO_CACHE).transform(new CircleTransform()).into(holder.civ_profile);
+        } else
+            holder.civ_profile.setImageResource(R.drawable.new_user);
+
+        if (ofertaList.get(position).getRating() != null || ofertaList.get(position).getRating() > 0) {
+
+            for (int i = 0; i < ofertaList.get(position).getRating(); i++) {
+                holder.stars[i].setVisibility(View.VISIBLE);
+            }
+
+            if (ofertaList.get(position).getRating() == 0) {
+                holder.stars[0].setVisibility(View.VISIBLE);
+            }
+        }
+
+        Picasso.with(context).load(ofertaList.get(position).getUrl_category()).into(holder.iv_background);
+
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                //LE PASAMOS EL NOMBRE DE LA CATEGORIA, NUM ESTRELLAS, PRECIO, FOTO PERFIL
+                Intent i = new Intent(v.getContext(), OfferShowActivity.class);
+                Bundle b = new Bundle();
+                b.putString("id_offer", holder.tv_id.getText().toString());
+
+
+/*                    Transition fade = new Fade();
+                    fade.excludeTarget(android.R.id.statusBarBackground, true);
+                    fade.excludeTarget(android.R.id.navigationBarBackground, true);
+                    context.getWindow().setExitTransition(fade);
+                    context.getWindow().setEnterTransition(fade);*/
+
+
+                Bitmap mbitmap_header = ((BitmapDrawable) holder.iv_background.getDrawable()).getBitmap();
+                ByteArrayOutputStream stream = new ByteArrayOutputStream();
+                mbitmap_header.compress(Bitmap.CompressFormat.PNG, 100, stream);
+                byte[] byteArray = stream.toByteArray();
+
+
+                ///i.putExtra("img_header", byteArray);
+
+                i.putExtra("img_header", byteArray);
+                i.putExtras(b);
+                    /*
+                            ActivityOptions options = ActivityOptions.makeSceneTransitionAnimation(
+                            context, new Pair(tv_name, "tn_name_offer"),
+                            new Pair(civ_profile, "tn_image_profile"));
+                    */
+
+
+                ActivityOptions activityOptions = ActivityOptions.makeSceneTransitionAnimation(
+                        context, new Pair(holder.iv_background, "tn_header"));
+                //
+
+                context.startActivity(i, activityOptions.toBundle());
+            }
+        });
+    }
+
+
+    @Override
+    public int getItemCount() {
+        return ofertaList.size();
+    }
+
     public class ViewHolder extends RecyclerView.ViewHolder {
 
         TextView tv_name;
@@ -59,105 +146,7 @@ public class OfertaAdapter extends RecyclerView.Adapter<OfertaAdapter.ViewHolder
             stars[3] = (ImageView) itemView.findViewById(R.id.iv_4);
             stars[4] = (ImageView) itemView.findViewById(R.id.iv_5);
 
-            //
-
-            //
-
-            itemView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-
-                    //LE PASAMOS EL NOMBRE DE LA CATEGORIA, NUM ESTRELLAS, PRECIO, FOTO PERFIL
-                    Intent i = new Intent(v.getContext(), OfferShowActivity.class);
-                    Bundle b = new Bundle();
-                    b.putString("id_offer", tv_id.getText().toString());
-
-
-/*                    Transition fade = new Fade();
-                    fade.excludeTarget(android.R.id.statusBarBackground, true);
-                    fade.excludeTarget(android.R.id.navigationBarBackground, true);
-                    context.getWindow().setExitTransition(fade);
-                    context.getWindow().setEnterTransition(fade);*/
-
-
-                    Bitmap mbitmap_header = ((BitmapDrawable) iv_background.getDrawable()).getBitmap();
-                    ByteArrayOutputStream stream = new ByteArrayOutputStream();
-                    mbitmap_header.compress(Bitmap.CompressFormat.PNG, 100, stream);
-                    byte[] byteArray = stream.toByteArray();
-
-
-                    ///i.putExtra("img_header", byteArray);
-
-                    i.putExtra("img_header", byteArray);
-                    i.putExtras(b);
-                    /*
-                            ActivityOptions options = ActivityOptions.makeSceneTransitionAnimation(
-                            context, new Pair(tv_name, "tn_name_offer"),
-                            new Pair(civ_profile, "tn_image_profile"));
-                    */
-
-
-                    ActivityOptions activityOptions = ActivityOptions.makeSceneTransitionAnimation(
-                            context, new Pair(iv_background, "tn_header"));
-                    //
-
-                    context.startActivity(i, activityOptions.toBundle());
-                }
-            });
         }
-
-        public void bindLista(Oferta oferta) {
-            tv_name.setText(oferta.getName());
-            tv_price.setText(String.valueOf(oferta.getPrice()) + "€");
-            tv_id.setText(String.valueOf(oferta.getId()));
-
-
-            if (oferta.getPic_profile().length() > 0) {
-                Picasso.with(context).load(oferta.getPic_profile()).memoryPolicy(MemoryPolicy.NO_CACHE).transform(new CircleTransform()).into(civ_profile);
-            } else
-                civ_profile.setImageResource(R.drawable.new_user);
-
-            if (oferta.getRating() != null || oferta.getRating() > 0) {
-
-                for (int i = 0; i < oferta.getRating(); i++) {
-                    stars[i].setVisibility(View.VISIBLE);
-                }
-
-                if (oferta.getRating() == 0) {
-                    stars[0].setVisibility(View.VISIBLE);
-                }
-            }
-
-            Picasso.with(context).load(oferta.getUrl_category()).into(iv_background);
-
-
-        }
-
     }
 
-    public OfertaAdapter(ArrayList<Oferta> ofertaList, Activity context) {
-        this.ofertaList = ofertaList;
-        this.context = context;
-    }
-
-    @Override
-    public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View itemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.label_oferta, parent, false);
-        ViewHolder tvh = new ViewHolder(itemView);
-
-        return tvh;
-    }
-
-    @Override
-    public void onBindViewHolder(ViewHolder holder, int position) {
-        Oferta item = ofertaList.get(position);
-        holder.bindLista(item);
-
-    }
-
-
-    @Override
-    public int getItemCount() {
-        return ofertaList.size();
-    }
 }

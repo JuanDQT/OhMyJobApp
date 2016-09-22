@@ -75,6 +75,7 @@ public class AddOfferFinish extends Fragment implements View.OnClickListener {
     public static final String KEY_LONGITUDE = "longitude";
     public static final String KEY_LOCATION = "location";
     public static final String KEY_EXPERIENCE = "experience";
+    public static final String KEY_DAYS = "days";
 
     private String location;
     private String zipcode;
@@ -127,7 +128,7 @@ public class AddOfferFinish extends Fragment implements View.OnClickListener {
         sbExperience.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
-                Log.d("NORMAL","ONSTART: " + i);
+                Log.d("SETLOCATION","ONSTART: " + i);
                 experience = i;
                 tvYears.setText(String.valueOf(i));
             }
@@ -172,6 +173,7 @@ public class AddOfferFinish extends Fragment implements View.OnClickListener {
             case R.id.ll_sa:
             case R.id.ll_do:
                 addToDayList(view);
+                Log.d("SETLOCATION", dayList + "");
                 break;
             case R.id.btn_location:
                 final Intent intent = new Intent(getActivity(), SetLocationActivity.class);
@@ -294,7 +296,7 @@ public class AddOfferFinish extends Fragment implements View.OnClickListener {
             lat = extras.getDouble("lat");
             lng = extras.getDouble("lng");
 
-            Log.d("NORMAL", "LAT: "+ lat + "\tLONG: "+ lng + "\tZIPCODE: "+ zipcode + "\tLOCALITY: "+ location);
+            Log.d("SETLOCATION", "[LLEGA]LAT: "+ lat + "\tLONG: "+ lng + "\tZIPCODE: "+ zipcode + "\tLOCALITY: "+ location);
             btnLocation.setVisibility(View.GONE);
             btnPush.setVisibility(View.VISIBLE);
 
@@ -302,5 +304,11 @@ public class AddOfferFinish extends Fragment implements View.OnClickListener {
         }
     }
 
-
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (location == null) {
+            btnLocation.setVisibility(View.VISIBLE);
+        }
+    }
 }

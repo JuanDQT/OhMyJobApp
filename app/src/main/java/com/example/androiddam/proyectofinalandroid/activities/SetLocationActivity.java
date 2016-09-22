@@ -85,8 +85,10 @@ public class SetLocationActivity extends FragmentActivity implements OnMapReadyC
         fabMyLocation.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
+                enablePopUp = true;
+                Toast.makeText(SetLocationActivity.this, "Localizando...", Toast.LENGTH_SHORT).show();
 
-                Log.d("NORMAL", "SAPE");
+                Log.d("SETLOCATION", "0");
                 final LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
                 if (ActivityCompat.checkSelfPermission(SetLocationActivity.this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(SetLocationActivity.this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
                     // TODO: Consider calling
@@ -103,6 +105,23 @@ public class SetLocationActivity extends FragmentActivity implements OnMapReadyC
                     public void onLocationChanged(Location location) {
                         LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
                         CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(latLng, 10);
+
+                        Log.d("SETLOCATION", "1");
+
+                        try {
+                            addresses = geocoder.getFromLocation(latLng.latitude, latLng.longitude, 1);
+                            updateAdress(addresses.get(0).getPostalCode(), addresses.get(0).getLocality(), addresses.get(0).getAddressLine(1),
+                                    latLng.latitude, latLng.longitude);
+
+                            Log.d("SETLOCATION", "XLAT: " + lat);
+                            Log.d("SETLOCATION", "XLNG: " + lng);
+                            Log.d("SETLOCATION", "XLOCATION: " + location);
+                            Log.d("SETLOCATION", "XZIP: " + zipcode);
+                            Log.d("SETLOCATION", "XADDRESS: " + adressLine);
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+
                         mMap.animateCamera(cameraUpdate);
                         if (ActivityCompat.checkSelfPermission(SetLocationActivity.this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(SetLocationActivity.this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
                             // TODO: Consider calling
@@ -112,6 +131,23 @@ public class SetLocationActivity extends FragmentActivity implements OnMapReadyC
                             //                                          int[] grantResults)
                             // to handle the case where the user grants the permission. See the documentation
                             // for ActivityCompat#requestPermissions for more details.
+                            Log.d("SETLOCATION", "1");
+
+                            try {
+                                addresses = geocoder.getFromLocation(latLng.latitude, latLng.longitude, 1);
+                                updateAdress(addresses.get(0).getPostalCode(), addresses.get(0).getLocality(), addresses.get(0).getAddressLine(1),
+                                        latLng.latitude, latLng.longitude);
+
+                                Log.d("SETLOCATION", "LAT: " + lat);
+                                Log.d("SETLOCATION", "LNG: " + lng);
+                                Log.d("SETLOCATION", "LOCATION: " + location);
+                                Log.d("SETLOCATION", "ZIP: " + zipcode);
+                                Log.d("SETLOCATION", "ADDRESS: " + adressLine);
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            }
+
+
                             return;
                         }
                         locationManager.removeUpdates(this);
@@ -164,7 +200,7 @@ public class SetLocationActivity extends FragmentActivity implements OnMapReadyC
                 // Getting the place entered
 
                 String location = etPlace.getText().toString();
-                addresses = null;
+                //addresses = null;
                 hideSoftKeyboard();
 
                 if (location == null || location.equals("")) {
@@ -173,28 +209,7 @@ public class SetLocationActivity extends FragmentActivity implements OnMapReadyC
                 }
 
                 enablePopUp = true;
-                showPopUp();
-                try {
-                    addresses = geocoder.getFromLocationName(location, 1);
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-                Log.d("NORMAL", "0");
-                if (addresses.get(0) == null) {
-                    Toast.makeText(SetLocationActivity.this, "No has indicado lugar[NULL]", Toast.LENGTH_SHORT).show();
-                    Log.d("NORMAL", "NO HAS INDICADO EL LUGAR[NULL]");
-                } else {
-                    Log.d("NORMAL", "ELSE");
-                    Address address = addresses.get(0);
-                    LatLng latLng = new LatLng(address.getLatitude(), address.getLongitude());
-                    mMap.clear();
-                    mMap.addMarker(new MarkerOptions().position(latLng).title(address.getAddressLine(1)));
-                    hasMarker = true;
-                    //Toast.makeText(getBaseContext(),String.valueOf(address.getLongitude()), Toast.LENGTH_SHORT).show();
-                    mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 12.0f));
-                    updateAdress(addresses.get(0).getPostalCode(), addresses.get(0).getLocality(), addresses.get(0).getAddressLine(1),
-                            latLng.latitude, latLng.longitude);
-                }
+                setMyLocation(location);
 
             }
         });
@@ -221,7 +236,6 @@ public class SetLocationActivity extends FragmentActivity implements OnMapReadyC
         mMap.setMyLocationEnabled(true);
 
         mMap.getUiSettings().setMyLocationButtonEnabled(false);
-
         mMap.getUiSettings().setMapToolbarEnabled(false);
         mMap.getUiSettings().setZoomControlsEnabled(false);
 
@@ -230,19 +244,7 @@ public class SetLocationActivity extends FragmentActivity implements OnMapReadyC
             @Override
             public void onMapClick(LatLng latLng) {
                 enablePopUp = true;
-                mMap.clear();
-                Log.d("NORMAL", "SIMPLE CLICK");
-
-                try {
-                    addresses = geocoder.getFromLocation(latLng.latitude, latLng.longitude, 1);
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-                mMap.addMarker(new MarkerOptions().position(latLng).title(addresses.get(0).getAddressLine(1)));
-                hasMarker = true;
-                mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 12.0f));
-                updateAdress(addresses.get(0).getPostalCode(), addresses.get(0).getLocality(), addresses.get(0).getAddressLine(1),
-                        latLng.latitude, latLng.longitude);
+                setMyLocation(latLng);
 
                 etPlace.setText(addresses.get(0).getAddressLine(1));
             }
@@ -252,7 +254,7 @@ public class SetLocationActivity extends FragmentActivity implements OnMapReadyC
         mMap.setOnCameraIdleListener(new GoogleMap.OnCameraIdleListener() {
             @Override
             public void onCameraIdle() {
-                Log.d("NORMAL", "IDLE");
+                Log.d("SETLOCATION", "CAMARA DETENIDA");
                 if (enablePopUp) {
                     showPopUp();
                     enablePopUp = false;
@@ -260,34 +262,16 @@ public class SetLocationActivity extends FragmentActivity implements OnMapReadyC
             }
         });
 
-/*
-        fabMyLocation.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-                if (hasMarker){
-                    System.out.println("SAPEEEEEEEEEEEEEEEEEEEEEEEEEEEE");
-                    Toast.makeText(SetLocationActivity.this, "VAMONOS SEÑOR!", Toast.LENGTH_SHORT).show();
-                    Intent i = getIntent();
-                    i.putExtra("lat",lat);
-                    i.putExtra("lng",lng);
-                    i.putExtra("zipcode",zipcode);
-                    i.putExtra("line",adressLine);
-                    i.putExtra("locality",locality);
-
-                    setResult(RESULT_OK, i);
-                }else {
-                    //Toast.makeText(getApplicationContext(),"No has añadido localización",Toast.LENGTH_LONG).show();
-                    //Toast.makeText(getApplicationContext(),"No has añadido localización",Toast.LENGTH_LONG).show();
-                }
-
-
-
-                finish();
-            }
-        });*/
 
     }
 
     private void showPopUp() {
+        Log.d("SETLOCATION", "LAT: " + lat);
+        Log.d("SETLOCATION", "LNG: " + lng);
+        Log.d("SETLOCATION", "ADDRESSLINE: " + addresses);
+        Log.d("SETLOCATION", "LOCALITY: " + locality);
+        Log.d("SETLOCATION", "ZIPCODE: " + zipcode);
+
         final AlertDialog.Builder alertdialog_builder = new AlertDialog.Builder(this);
         alertdialog_builder.setTitle("Ubicación");
         alertdialog_builder.setMessage("¿Es correcta tu ubicación?");
@@ -295,6 +279,9 @@ public class SetLocationActivity extends FragmentActivity implements OnMapReadyC
         TextView tvLocation = (TextView) view.findViewById(R.id.tv_location);
 
         tvLocation.setText(addresses.get(0).getAddressLine(1) + "");
+        Log.d("SETLOCATION", "[LLEGA]LAT: " + lat + "\tLONG: " + lng + "\tZIPCODE: " + zipcode + "\tLOCALITY: " + locality);
+
+
         //
         //CONSEGUIR CP Y LOCALIDAD COMO LO AHCE ADDRES
         //
@@ -304,12 +291,13 @@ public class SetLocationActivity extends FragmentActivity implements OnMapReadyC
         alertdialog_builder.setPositiveButton("GUARDAR", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
+                Log.d("SETLOCATION", "LAT: " + lat + "\tLONG: " + lng + "\tZIPCODE: " + zipcode + "\tLOCALITY: " + locality);
                 Intent intent = getIntent();
-                intent.putExtra("lat",lat);
-                intent.putExtra("lng",lng);
-                intent.putExtra("zipcode",zipcode);
+                intent.putExtra("lat", lat);
+                intent.putExtra("lng", lng);
+                intent.putExtra("zipcode", zipcode);
                 //intent.putExtra("line",adressLine);
-                intent.putExtra("location",locality);
+                intent.putExtra("location", locality);
                 //Toast.makeText(SetLocationActivity.this, "LAT: "+ lat + "\tLONG: "+ lng + "\tZIPCODE: "+ zipcode + "\tLOCALITY: "+ locality, Toast.LENGTH_SHORT).show();
 
                 setResult(RESULT_OK, intent);
@@ -397,14 +385,66 @@ public class SetLocationActivity extends FragmentActivity implements OnMapReadyC
     }
 
     private void updateAdress(String zipcode, String locality, String line, double lat, double lng) {
-
+        Log.d("SETLOCATION", "ME HE EJECUTADO");
         this.locality = locality;
-        this.zipcode = zipcode;
+        if (zipcode == null)
+            this.zipcode = "0";
+        else
+            this.zipcode = zipcode;
         this.adressLine = line;
         this.lat = lat;
         this.lng = lng;
     }
 
+    public void setMyLocation(LatLng latLng) {
+        try {
+            addresses = geocoder.getFromLocation(latLng.latitude, latLng.longitude, 1);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        Log.d("NORMAL", "0");
+        if (addresses.get(0) == null) {
+            Toast.makeText(SetLocationActivity.this, "No has indicado lugar[NULL]", Toast.LENGTH_SHORT).show();
+            Log.d("SETLOCATION", "NO HAS INDICADO EL LUGAR[NULL]");
+        } else {
+            mMap.clear();
+            Log.d("NORMAL", "SIMPLE CLICK");
+
+            try {
+                addresses = geocoder.getFromLocation(latLng.latitude, latLng.longitude, 1);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            mMap.addMarker(new MarkerOptions().position(latLng).title(addresses.get(0).getAddressLine(1)));
+            hasMarker = true;
+            mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 12.0f));
+            updateAdress(addresses.get(0).getPostalCode(), addresses.get(0).getLocality(), addresses.get(0).getAddressLine(1), latLng.latitude, latLng.longitude);
+        }
+    }
+
+    public void setMyLocation(String location) {
+        try {
+            addresses = geocoder.getFromLocationName(location, 1);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        Log.d("NORMAL", "0");
+        if (addresses.get(0) == null) {
+            Toast.makeText(SetLocationActivity.this, "No has indicado lugar[NULL]", Toast.LENGTH_SHORT).show();
+            Log.d("SETLOCATION", "NO HAS INDICADO EL LUGAR[NULL]");
+        } else {
+            Log.d("SETLOCATION", "ELSE");
+            Address address = addresses.get(0);
+            LatLng latLng = new LatLng(address.getLatitude(), address.getLongitude());
+            mMap.clear();
+            mMap.addMarker(new MarkerOptions().position(latLng).title(address.getAddressLine(1)));
+            hasMarker = true;
+            //Toast.makeText(getBaseContext(),String.valueOf(address.getLongitude()), Toast.LENGTH_SHORT).show();
+            mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 12.0f));
+            updateAdress(addresses.get(0).getPostalCode(), addresses.get(0).getLocality(), addresses.get(0).getAddressLine(1),
+                    latLng.latitude, latLng.longitude);
+        }
+    }
 
 }
 
