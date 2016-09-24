@@ -51,7 +51,13 @@ public class OfertaAdapter extends RecyclerView.Adapter<OfertaAdapter.ViewHolder
     @Override
     public void onBindViewHolder(final ViewHolder holder, int position) {
         holder.tv_name.setText(ofertaList.get(position).getName());
-        holder.tv_price.setText(String.valueOf(ofertaList.get(position).getPrice()) + "€");
+        if (ofertaList.get(position).getPrice() == 0) {
+            holder.tv_price.setText("A convenir");
+            holder.tv_price.setTextSize(20);
+        } else {
+            holder.tv_price.setText(String.valueOf(ofertaList.get(position).getPrice()) + "€");
+        }
+
         holder.tv_id.setText(String.valueOf(ofertaList.get(position).getId()));
 
 

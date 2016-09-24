@@ -272,49 +272,47 @@ public class SetLocationActivity extends FragmentActivity implements OnMapReadyC
         Log.d("SETLOCATION", "LOCALITY: " + locality);
         Log.d("SETLOCATION", "ZIPCODE: " + zipcode);
 
-        final AlertDialog.Builder alertdialog_builder = new AlertDialog.Builder(this);
-        alertdialog_builder.setTitle("Ubicación");
-        alertdialog_builder.setMessage("¿Es correcta tu ubicación?");
-        View view = LayoutInflater.from(this).inflate(R.layout.dialog_location_ok, null);
-        TextView tvLocation = (TextView) view.findViewById(R.id.tv_location);
+        if (locality != null) {
+            Log.d("SETLOCATION", "NULO CHE");
+            final AlertDialog.Builder alertdialog_builder = new AlertDialog.Builder(this);
+            alertdialog_builder.setTitle("Ubicación");
+            alertdialog_builder.setMessage("¿Es correcta tu ubicación?");
+            View view = LayoutInflater.from(this).inflate(R.layout.dialog_location_ok, null);
+            TextView tvLocation = (TextView) view.findViewById(R.id.tv_location);
 
-        tvLocation.setText(addresses.get(0).getAddressLine(1) + "");
-        Log.d("SETLOCATION", "[LLEGA]LAT: " + lat + "\tLONG: " + lng + "\tZIPCODE: " + zipcode + "\tLOCALITY: " + locality);
+            tvLocation.setText(addresses.get(0).getAddressLine(1) + "");
+            Log.d("SETLOCATION", "[LLEGA]LAT: " + lat + "\tLONG: " + lng + "\tZIPCODE: " + zipcode + "\tLOCALITY: " + locality);
 
+            //CONSEGUIR CP Y LOCALIDAD COMO LO AHCE ADDRES
+            alertdialog_builder.setView(view);
 
-        //
-        //CONSEGUIR CP Y LOCALIDAD COMO LO AHCE ADDRES
-        //
+            alertdialog_builder.setPositiveButton("GUARDAR", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialogInterface, int i) {
+                    Log.d("SETLOCATION", "LAT: " + lat + "\tLONG: " + lng + "\tZIPCODE: " + zipcode + "\tLOCALITY: " + locality);
+                    Intent intent = getIntent();
+                    intent.putExtra("lat", lat);
+                    intent.putExtra("lng", lng);
+                    intent.putExtra("zipcode", zipcode);
+                    //intent.putExtra("line",adressLine);
+                    intent.putExtra("location", locality);
 
-        alertdialog_builder.setView(view);
+                    setResult(RESULT_OK, intent);
+                    finish();
 
-        alertdialog_builder.setPositiveButton("GUARDAR", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialogInterface, int i) {
-                Log.d("SETLOCATION", "LAT: " + lat + "\tLONG: " + lng + "\tZIPCODE: " + zipcode + "\tLOCALITY: " + locality);
-                Intent intent = getIntent();
-                intent.putExtra("lat", lat);
-                intent.putExtra("lng", lng);
-                intent.putExtra("zipcode", zipcode);
-                //intent.putExtra("line",adressLine);
-                intent.putExtra("location", locality);
-                //Toast.makeText(SetLocationActivity.this, "LAT: "+ lat + "\tLONG: "+ lng + "\tZIPCODE: "+ zipcode + "\tLOCALITY: "+ locality, Toast.LENGTH_SHORT).show();
+                }
+            });
 
-                setResult(RESULT_OK, intent);
-                finish();
-
-            }
-        });
-
-        alertdialog_builder.setNegativeButton("CANCELAR", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialogInterface, int i) {
-                dialogInterface.cancel();
-            }
-        });
+            alertdialog_builder.setNegativeButton("CANCELAR", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialogInterface, int i) {
+                    dialogInterface.cancel();
+                }
+            });
 
 
-        alertdialog_builder.show();
+            alertdialog_builder.show();
+        }
 
     }
 

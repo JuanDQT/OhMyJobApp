@@ -39,12 +39,14 @@
                 android:inputType="textMultiLine"
                 android:ems="10"
                 android:id="@+id/et_description"
-                android:layout_margin="10dp"
                 android:hint="Añade una descripción..."
                 android:gravity="start"
-                android:padding="5dp"
                 android:autoText="false"
-                android:background="#ddd" />
+                android:background="@drawable/description_edittext_rounded"
+                android:paddingLeft="15dp"
+                android:textColor="#333"
+                android:layout_margin="10dp"
+                android:paddingTop="10dp" />
         </LinearLayout>
 
         <TextView
@@ -276,7 +278,11 @@
                 android:progressTint="@color/colorAccent"
                 android:splitTrack="false"
                 android:layout_marginTop="15dp"
-                android:indeterminate="false" />
+                android:indeterminate="false"
+                android:paddingEnd="10dp"
+                android:layout_marginLeft="25dp"
+                android:layout_marginRight="25dp"
+                android:paddingStart="10dp" />
 
             <TextView
                 android:layout_width="wrap_content"

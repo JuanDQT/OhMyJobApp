@@ -365,20 +365,6 @@ public class HomeActivity extends AppCompatActivity {
 
 
         sv_buscador = (SearchView) findViewById(R.id.sv_buscador);
-        //sv_buscador.setDrawingCacheBackgroundColor(Color.WHITE);
-        /*
-        sv_buscador = (SearchView) this.findViewById(R.id.sv_buscador);
-
-        sv_buscador.setOnQueryTextFocusChangeListener(new View.OnFocusChangeListener() {
-            @Override
-            public void onFocusChange(View view, boolean hasFocus) {
-                if (hasFocus) {
-                    showInputMethod(view.findFocus());
-                }
-            }
-        });*/
-
-
 
         sv_buscador.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
@@ -413,10 +399,6 @@ public class HomeActivity extends AppCompatActivity {
                                     System.out.println("SUBCATE: "+ jsonObject.getString("name_category"));
                                     String img_path = jsonObject.getString("img_path");
                                     ofertaList.add(new Oferta(jsonObject.getInt("id_offer"),jsonObject.getInt("price"),jsonObject.getString("name_category"),img_path,jsonObject.getInt("rating"), jsonObject.getString("img") ));
-
-                                    //ofertaList.add(new Oferta(jsonObject.getInt("id_offer"),jsonObject.getInt("price"),jsonObject.getString("name_category"),img_path,jsonObject.getInt("rating"), jsonObject.getString("img")));
-
-
 
                                 }
 
@@ -509,6 +491,7 @@ public class HomeActivity extends AppCompatActivity {
             circleImageView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+                    Log.d("PROFILE", "holi?");
                     //Toast.makeText(HomeActivity.this, "EL PELUCA SAPEE", Toast.LENGTH_SHORT).show();
                     m_ok.setVisible(true);
                     drawerLayout.closeDrawers();
@@ -528,7 +511,7 @@ public class HomeActivity extends AppCompatActivity {
                     b.putString("img_path", url_imagen);
                     b.putString("birthdate", getBirthdate());
                     currentFragment.setArguments(b);
-                    //cambiarFragment(currentFragment);
+                    cambiarFragment(currentFragment);
                 }
             });
 
@@ -618,20 +601,23 @@ public class HomeActivity extends AppCompatActivity {
                 System.out.println(error.toString());
             }
 
-            public void cambiarFragment(Fragment fragment) {
-                //menu.setGroupVisible(R.id.m_inbox,false);
-                m_buzon.setVisible(false);
 
-                fragmentManager =  getSupportFragmentManager();
-                fragmentManager.beginTransaction()
-                        .replace(R.id.center_fr, fragment)
-                        .commit();
-
-
-            }
         });
 
         MySingleton.getInstance(this).addToRequestQueue(jsonArrayRequest);
+
+    }
+
+    public void cambiarFragment(Fragment fragment) {
+        //menu.setGroupVisible(R.id.m_inbox,false);
+        Log.d("PROFILE", "ENTRE CAMBIAR FRAGMENT");
+        m_buzon.setVisible(false);
+
+        fragmentManager =  getSupportFragmentManager();
+        fragmentManager.beginTransaction()
+                .replace(R.id.center_fr, fragment)
+                .commit();
+
 
     }
 

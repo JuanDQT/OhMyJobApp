@@ -1,4 +1,4 @@
-package com.example.androiddam.proyectofinalandroid.model;
+package com.example.androiddam.proyectofinalandroid.io;
 
 import android.util.Log;
 
@@ -34,7 +34,7 @@ public final class Days {
             for (String s : dayStringArray) {
                 Log.d("FINISH", "N: " + s);
                 Log.d("FINISH", "DAY: " + DAYS_NAME[Integer.parseInt(s)-1]);
-                result += DAYS_NAME[Integer.parseInt(s) - 1].substring(0,2) + ", ";
+                result += DAYS_NAME[Integer.parseInt(s) - 1].substring(0,3) + ", ";
             }
             result = result.substring(0, result.length() - 2);
         }

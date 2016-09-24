@@ -15,7 +15,6 @@ import android.view.WindowManager;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.example.androiddam.proyectofinalandroid.R;
 import com.example.androiddam.proyectofinalandroid.activities.AddOfferActivity;
@@ -101,7 +100,7 @@ public class ItemOfferSubcategoryAdapter extends RecyclerView.Adapter<ItemOfferS
                 new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
                         String name_offer = etNameOffer.getText().toString();
-                        Toast.makeText(activity, "NAME OFFER: "+ name_offer, Toast.LENGTH_SHORT).show();
+                        //Toast.makeText(activity, "NAME OFFER: "+ name_offer, Toast.LENGTH_SHORT).show();
                         ((AddOfferActivity) view.getContext()).goSelectTypeJob(etNameOffer.getText().toString(), idCategory);
 
                     }

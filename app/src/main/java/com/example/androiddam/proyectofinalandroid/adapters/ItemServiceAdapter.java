@@ -8,7 +8,6 @@ import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.example.androiddam.proyectofinalandroid.R;
 import com.example.androiddam.proyectofinalandroid.activities.AddOfferActivity;
@@ -44,7 +43,6 @@ public class ItemServiceAdapter extends RecyclerView.Adapter<ItemServiceAdapter.
         holder.flView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Toast.makeText(activity, "ID: "+ holder.tv_id.getText().toString(), Toast.LENGTH_SHORT).show();
                 ((AddOfferActivity) view.getContext()).goLookUpSubcategory(Integer.valueOf(holder.tv_id.getText().toString()));
 
             }

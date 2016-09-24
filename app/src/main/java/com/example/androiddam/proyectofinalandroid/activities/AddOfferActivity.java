@@ -2,6 +2,7 @@ package com.example.androiddam.proyectofinalandroid.activities;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.widget.Toast;
 
 import com.example.androiddam.proyectofinalandroid.R;
 import com.example.androiddam.proyectofinalandroid.fragments.AddOfferFinish;
@@ -63,6 +64,7 @@ public class AddOfferActivity extends AppCompatActivity {
     }
 
     public void goFinishFragment(){
+        Toast.makeText(this, "¡Oferta subida con éxito!", Toast.LENGTH_SHORT).show();
         finish();
     }
 
