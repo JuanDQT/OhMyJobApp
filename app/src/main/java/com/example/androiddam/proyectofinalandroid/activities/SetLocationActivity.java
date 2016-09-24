@@ -423,12 +423,13 @@ public class SetLocationActivity extends FragmentActivity implements OnMapReadyC
     }
 
     public void setMyLocation(String location) {
+        Log.d("SETLOCATION", "STRING");
         try {
             addresses = geocoder.getFromLocationName(location, 1);
         } catch (IOException e) {
             e.printStackTrace();
         }
-        Log.d("NORMAL", "0");
+        //Log.d("LATLNG", "0");
         if (addresses.get(0) == null) {
             Toast.makeText(SetLocationActivity.this, "No has indicado lugar[NULL]", Toast.LENGTH_SHORT).show();
             Log.d("SETLOCATION", "NO HAS INDICADO EL LUGAR[NULL]");

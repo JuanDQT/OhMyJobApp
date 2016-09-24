@@ -34,6 +34,8 @@ import com.android.volley.toolbox.StringRequest;
 import com.example.androiddam.proyectofinalandroid.R;
 import com.example.androiddam.proyectofinalandroid.adapters.PeopleContactAdapter;
 import com.example.androiddam.proyectofinalandroid.controllers.MySingleton;
+import com.example.androiddam.proyectofinalandroid.model.Days;
+import com.example.androiddam.proyectofinalandroid.model.Studies;
 import com.example.androiddam.proyectofinalandroid.widgets.CircularAnim;
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -58,7 +60,7 @@ public class OfferShowActivity extends FragmentActivity implements OnMapReadyCal
     private GoogleMap mMap;
     public static final String OFFER_URL = "http://proyecto-dam.esy.es/php/getSingleOffer.php";
 
-    public static final String OFFER_KEY = "user_id";
+    public static final String OFFER_KEY = "offer_id";
 
     private int user_id;
 
@@ -68,9 +70,11 @@ public class OfferShowActivity extends FragmentActivity implements OnMapReadyCal
     private String id_offer;
     private String phone;
     private double user_rating;
+    private int experience;
 
 
     private LinearLayout ll_call_user;
+    private LinearLayout llChatUser;
     private LinearLayout ll_profile_user;
     private LinearLayout ll_fav_user;
 
@@ -81,6 +85,11 @@ public class OfferShowActivity extends FragmentActivity implements OnMapReadyCal
     private TextView tv_offer_name;
     private TextView tv_fav;
     private TextView tv_position;
+    private TextView tvExperience;
+    private TextView tvDisponibility;
+    private TextView tvStudies;
+    private TextView tvLocation;
+    private LinearLayout llStudies;
 
     //private FloatingActionButton fab;
     private FloatingActionButton fab_map;
@@ -113,8 +122,14 @@ public class OfferShowActivity extends FragmentActivity implements OnMapReadyCal
 
         ll_profile_user = (LinearLayout) findViewById(R.id.profile_view);
         ll_call_user = (LinearLayout) findViewById(R.id.ll_call_user);
+        llChatUser = (LinearLayout) findViewById(R.id.ll_chat_user);
         ll_fav_user = (LinearLayout) findViewById(R.id.ll_fav_user);
         tv_position = (TextView) findViewById(R.id.tv_position);
+        tvExperience = (TextView) findViewById(R.id.tv_experience);
+        tvDisponibility = (TextView) findViewById(R.id.tv_disponibility);
+        tvStudies = (TextView) findViewById(R.id.tv_studies);
+        tvLocation = (TextView) findViewById(R.id.tv_location);
+        llStudies = (LinearLayout) findViewById(R.id.ll_studies);
 
         byte[] byteArray = getIntent().getByteArrayExtra("img_header");
         Bitmap bmp = BitmapFactory.decodeByteArray(byteArray, 0, byteArray.length);
@@ -346,18 +361,39 @@ public class OfferShowActivity extends FragmentActivity implements OnMapReadyCal
                 public void onResponse(String response) {
                     try {
 
+                        Log.d("FINISH", response);
                         jsonOffer = new JSONObject(response);
-
                         tv_offer_name.setText(jsonOffer.getString("name_offer"));
-
-
-                        //
                         user_id = jsonOffer.getInt("user_id");
                         tvOfferTitle.setText(jsonOffer.getString("name_category"));
                         phone = jsonOffer.getString("phone");
+                        if (phone.length() == 0) {
+                            ll_call_user.setVisibility(View.GONE);
+                            llChatUser.setVisibility(View.VISIBLE);
+                        }else{
+                            ll_call_user.setVisibility(View.VISIBLE);
+                            llChatUser.setVisibility(View.GONE);
+                        }
                         tvOfferPrice.setText(jsonOffer.getString("price") + "€");
                         tvOfferDescription.setText(jsonOffer.getString("description"));
                         user_rating = Double.parseDouble(jsonOffer.getString("rating"));
+                        experience = Integer.valueOf(jsonOffer.getInt("experience"));
+
+                        if (jsonOffer.getString("studies").length() == 0) {
+                            llStudies.setVisibility(View.GONE);
+                        }else
+                            tvStudies.setText(Studies.getTextStudies(jsonOffer.getInt("studies")));
+                        Log.d("FINISH" , jsonOffer.getString("disponibility"));
+                        tvDisponibility.setText(Days.getTextDay(jsonOffer.getString("disponibility")));
+
+                        if (experience>1)
+                            tvExperience.setText(experience + " años");
+                        else
+                            tvExperience.setText(experience + " año");
+
+                        tvLocation.setText(jsonOffer.getString("location"));
+
+
                         for (int i = 0; i < user_rating; i++) {
                             stars[i].setVisibility(View.VISIBLE);
                         }
@@ -365,21 +401,6 @@ public class OfferShowActivity extends FragmentActivity implements OnMapReadyCal
                         if (user_rating == 0) {
                             stars[0].setVisibility(View.VISIBLE);
                         }
-
-/*                        if (!jsonOffer.isNull("lat") && !jsonOffer.isNull("lng")) {
-
-
-                            lat = Double.valueOf(jsonOffer.getString("lat"));
-                            lng = Double.valueOf(jsonOffer.getString("lng"));
-
-                            LatLng latlng = new LatLng(lat, lng);
-
-
-                            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latlng, 14));
-                            mMap.addMarker(new MarkerOptions().position(latlng).title(jsonOffer.getString("adress_line")));
-
-
-                        }*/
 
 
                     } catch (JSONException e) {

@@ -6,16 +6,19 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
+import android.support.v7.widget.SwitchCompat;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.widget.Button;
+import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.SeekBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
@@ -31,9 +34,8 @@ import com.example.androiddam.proyectofinalandroid.widgets.CircularAnim;
 import com.labo.kaji.fragmentanimations.MoveAnimation;
 
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
-import java.util.Set;
+import java.util.TreeSet;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -56,7 +58,7 @@ public class AddOfferFinish extends Fragment implements View.OnClickListener {
     private Button btnPush;
     private Button btnLocation;
 
-    private Set<Integer> dayList;
+    private TreeSet<Integer> dayList;
 
     public static int categoryId;
     public static String nameOffer;
@@ -76,13 +78,16 @@ public class AddOfferFinish extends Fragment implements View.OnClickListener {
     public static final String KEY_LOCATION = "location";
     public static final String KEY_EXPERIENCE = "experience";
     public static final String KEY_DAYS = "days";
+    public static final String KEY_TELEPHONE = "b_telephone";
+    public static final String KEY_STUDIES = "b_studies";
 
     private String location;
     private String zipcode;
     private double lat;
     private double lng;
     private int experience = 0;
-    private String userId;
+    private String showTelephone = "0";
+    private String showStudies = "0";
 
     public AddOfferFinish() {
         // Required empty public constructor
@@ -92,7 +97,7 @@ public class AddOfferFinish extends Fragment implements View.OnClickListener {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_add_offer_finish, container, false);
-        dayList = new HashSet<>();
+        dayList = new TreeSet<>();
         etDescription = (EditText) view.findViewById(R.id.et_description);
         llLu = (LinearLayout) view.findViewById(R.id.ll_lu);
         llMa = (LinearLayout) view.findViewById(R.id.ll_ma);
@@ -106,6 +111,7 @@ public class AddOfferFinish extends Fragment implements View.OnClickListener {
         sbExperience = (SeekBar) view.findViewById(R.id.sb_experience);
         btnLocation = (Button) view.findViewById(R.id.btn_location);
         btnLocation = (Button) view.findViewById(R.id.btn_location);
+
         llLu.setOnClickListener(this);
         llMa.setOnClickListener(this);
         llMi.setOnClickListener(this);
@@ -176,6 +182,7 @@ public class AddOfferFinish extends Fragment implements View.OnClickListener {
                 Log.d("SETLOCATION", dayList + "");
                 break;
             case R.id.btn_location:
+
                 final Intent intent = new Intent(getActivity(), SetLocationActivity.class);
                 CircularAnim.hide(btnLocation)
                         .onAnimationEndListener(new CircularAnim.OnAnimationEndListener() {
@@ -193,8 +200,14 @@ public class AddOfferFinish extends Fragment implements View.OnClickListener {
                         }).go();
                 break;
             case R.id.btn_push:
-                //Log.d("NORMAL", "DAYS: " + dayList);
-                showPupUp();
+
+                if (etDescription.getText().toString().length()>10 && dayList.size()>0)
+                    showPupUp();
+                else
+                    if (etDescription.getText().toString().length()<10)
+                        Toast.makeText(getActivity(), "Descripción incompleta", Toast.LENGTH_SHORT).show();
+                    else if (dayList.size()==0)
+                        Toast.makeText(getActivity(), "Selecciona al menos un dia disponible", Toast.LENGTH_SHORT).show();
                 break;
         }
 
@@ -206,6 +219,26 @@ public class AddOfferFinish extends Fragment implements View.OnClickListener {
 
         View view =  LayoutInflater.from(getActivity()).inflate(R.layout.dialog_setup_offer, null);
         builder.setView(view);
+
+        //
+        SwitchCompat scTelephone = (SwitchCompat) view.findViewById(R.id.sc_telephone);
+        SwitchCompat scStudies = (SwitchCompat) view.findViewById(R.id.sc_studies);
+
+        scTelephone.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+                int temp = b?1:0;
+                showTelephone = String.valueOf(temp);
+            }
+        });
+        scStudies.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+                int temp = b?1:0;
+                showStudies = String.valueOf(temp);
+            }
+        });
+        //
 
         builder.setPositiveButton("CONTINUAR", new DialogInterface.OnClickListener() {
             @Override
@@ -255,13 +288,26 @@ public class AddOfferFinish extends Fragment implements View.OnClickListener {
                 map.put(KEY_LONGITUDE, String.valueOf(lng));
                 map.put(KEY_LATITUDE, String.valueOf(lat));
                 map.put(KEY_EXPERIENCE, String.valueOf(experience));
+                map.put(KEY_DAYS, getStringDays(dayList));
 
+                map.put(KEY_TELEPHONE, showTelephone);
+                map.put(KEY_STUDIES, showStudies);
 
                 return map;
             }
         };
 
         MySingleton.getInstance(getContext()).addToRequestQueue(stringRequest);
+    }
+
+    public String getStringDays(TreeSet<Integer> daylist) {
+        String days = "";
+        //Collections.sort(daylist);
+        for (Integer integer : dayList) {
+            days += integer;
+        }
+        Log.d("FINISH", days);
+        return days;
     }
 
     private void addToDayList(View view) {

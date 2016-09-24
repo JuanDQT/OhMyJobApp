@@ -32,7 +32,8 @@
             android:layout_height="wrap_content"
             android:defaultValue="true"
             android:title="title"
-            android:layout_marginLeft="25dp" />
+            android:layout_marginLeft="25dp"
+            android:id="@+id/sc_telephone" />
 
     </LinearLayout>
 
@@ -46,7 +47,7 @@
         <ImageView
             android:layout_width="25dp"
             android:layout_height="25dp"
-            android:src="@drawable/style_level_icon" />
+            android:src="@drawable/studies_icon_popup" />
 
         <TextView
             android:layout_width="160dp"
@@ -60,6 +61,7 @@
             android:layout_height="wrap_content"
             android:defaultValue="true"
             android:title="title"
-            android:layout_marginLeft="25dp" />
+            android:layout_marginLeft="25dp"
+            android:id="@+id/sc_studies" />
     </LinearLayout>
 </LinearLayout>
