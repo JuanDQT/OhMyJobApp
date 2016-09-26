@@ -5,7 +5,7 @@
     android:layout_height="85dp"
     android:visibility="visible"
     android:orientation="horizontal"
-    android:background="#aaa">
+    android:background="@color/colorPrimaryDark">
 
     <LinearLayout
         android:orientation="horizontal"

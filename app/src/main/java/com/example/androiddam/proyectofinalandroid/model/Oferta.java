@@ -122,6 +122,22 @@ public class Oferta {
         return url_category;
     }
 
+    @Override
+    public String toString() {
+        return "Oferta{" +
+                "id=" + id +
+                ", pic_profile='" + pic_profile + '\'' +
+                ", username='" + username + '\'' +
+                ", price=" + price +
+                ", name='" + name + '\'' +
+                ", description='" + description + '\'' +
+                ", rating=" + rating +
+                ", cp=" + cp +
+                ", user_id=" + user_id +
+                ", url_category='" + url_category + '\'' +
+                '}';
+    }
+
     public void setUrl_category(String url_category) {
         this.url_category = url_category;
     }

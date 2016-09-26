@@ -33,6 +33,7 @@ import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.SearchView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
@@ -47,7 +48,6 @@ import com.example.androiddam.proyectofinalandroid.controllers.MySingleton;
 import com.example.androiddam.proyectofinalandroid.fragments.Avatar_fr;
 import com.example.androiddam.proyectofinalandroid.fragments.Contact_fr;
 import com.example.androiddam.proyectofinalandroid.fragments.Mensajes_fr;
-import com.example.androiddam.proyectofinalandroid.fragments.Notifications_fr;
 import com.example.androiddam.proyectofinalandroid.model.ItemService;
 import com.example.androiddam.proyectofinalandroid.model.Oferta;
 import com.example.androiddam.proyectofinalandroid.model.OptionMenu;
@@ -78,10 +78,11 @@ public class HomeActivity extends AppCompatActivity {
     private int fragment_position;
     private Menu menu;
     private MenuItem m_buzon;
-    private MenuItem m_ok;
+    //private MenuItem m_ok;
     private MenuItem m_acces;
     FragmentManager fragmentManager;
     private Fragment currentFragment;
+    private Toolbar toolbar;
 
     private ImageView iv_blur_profile;
 
@@ -90,12 +91,13 @@ public class HomeActivity extends AppCompatActivity {
     //public static final String URL_OFFERS = "http://virtual309.ies-sabadell.cat/virtual309/proyectofinal/getOffers.php";
     public static final String URL_OFFERS = "http://proyecto-dam.esy.es/php/getOffers.php";
     //private String UPLOAD_URL ="http://virtual309.ies-sabadell.cat/virtual309/proyectofinal/masterUpdate.php";
-    private String UPLOAD_URL ="http://proyecto-dam.esy.es/php/masterUpdate.php";
+    private String UPLOAD_URL = "http://proyecto-dam.esy.es/php/masterUpdate.php";
 
-    private String SEARCH_URL ="http://proyecto-dam.esy.es/php/searchView.php";
+    private String SEARCH_URL = "http://proyecto-dam.esy.es/php/searchView.php";
 
     private static final String CATEGORIES_URL = "http://proyecto-dam.esy.es/php/getCategoriesV2.php";
 
+    ActionBarDrawerToggle toggle;
 
     //BITMAP NAVI VIEW
     public Bitmap bitmap;
@@ -110,7 +112,6 @@ public class HomeActivity extends AppCompatActivity {
 
     String adressLine;
     String locality;
-
 
 
     private String name;
@@ -130,23 +131,23 @@ public class HomeActivity extends AppCompatActivity {
     public static ArrayList<ItemService> itemServices;
 
     @Override
-    public boolean onCreateOptionsMenu (Menu menu) {
+    public boolean onCreateOptionsMenu(Menu menu) {
         //getMenuInflater().inflate(R.menu.menu_test,menu);
         super.onCreateOptionsMenu(menu);
         Log.e("LOG", "OnCreateOptionMenu");
 
         getMenuInflater().inflate(R.menu.menu_top, menu);
         m_buzon = menu.findItem(R.id.m_inbox);
-        m_ok = menu.findItem(R.id.m_ok);
+        //m_ok = menu.findItem(R.id.m_ok);
 
         m_acces = menu.findItem(R.id.m_access);
         //Toast.makeText(HomeActivity.this, "CARAJO 1", Toast.LENGTH_SHORT).show();
-        if (MainActivity.get_json(getApplicationContext())==null) {
+        if (MainActivity.get_json(getApplicationContext()) == null) {
             m_acces.setVisible(true);
             m_buzon.setVisible(false);
-            m_ok.setVisible(false);
-        }else {
-            m_ok.setVisible(false);
+            //m_ok.setVisible(false);
+        } else {
+            //m_ok.setVisible(false);
             m_acces.setVisible(false);
         }
         return true;
@@ -159,25 +160,25 @@ public class HomeActivity extends AppCompatActivity {
         setContentView(R.layout.activity_home);
         Log.e("LOG", "HOLI");
 
-        Toolbar toolbar = (Toolbar) findViewById(R.id.mi_toolbar);
+        toolbar = (Toolbar) findViewById(R.id.mi_toolbar);
         setSupportActionBar(toolbar);
 
         fragmentOptions = new ArrayList<>();
 
         drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         recyclerView = (RecyclerView) findViewById(R.id.rv_ofertas);
-        recyclerView.setLayoutManager(new LinearLayoutManager(this,LinearLayoutManager.VERTICAL,false));
+        recyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
 
         ofertaList = new ArrayList<>();
 
         System.out.println("LECHERO");
 
-
-        if (MainActivity.get_json(getApplicationContext())!=null) {
+        if (MainActivity.get_json(getApplicationContext()) != null) {
 
             //ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawerLayout, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
-            ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
+            toggle = new ActionBarDrawerToggle(
                     this, drawerLayout, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close) {
+
 
                 //OCULTAR MENU CUANDO YA SE HA CERRADO EL MENU SLIDER
                 @Override
@@ -205,6 +206,7 @@ public class HomeActivity extends AppCompatActivity {
 
                 }
             };
+
 
             drawerLayout.addDrawerListener(toggle);
             toggle.syncState();
@@ -304,7 +306,7 @@ public class HomeActivity extends AppCompatActivity {
 
                 tv_name = (TextView) findViewById(R.id.tv_name);
                 //tv_name = (TextView) linearLayout.getRootView().findViewById(R.id.tv_name);
-                tv_name.setText(r_name + " " + r_lastname);
+                tv_name.setText(r_name);
 
                 TextView tv_rating = (TextView) findViewById(R.id.tv_rating);
                 //TextView tv_rating = (TextView) linearLayout.getRootView().findViewById(R.id.tv_rating);
@@ -342,14 +344,13 @@ public class HomeActivity extends AppCompatActivity {
 
             }
 
-        }else
+        } else
             drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
 
 
         cargarOfertas();
 
         System.out.println("PASO 1.4");
-
 
 
         srl_reload = (SwipeRefreshLayout) this.findViewById(R.id.srl_reload);
@@ -378,37 +379,39 @@ public class HomeActivity extends AppCompatActivity {
 
             @Override
             public boolean onQueryTextChange(final String newText) {
-                Log.d("SEARCHVIEW", "CAMBIA");
+                Log.d("SEARCHVIEW", "CAMBIA A: "+ newText);
+                ofertaList.clear();
+                Log.d("SEARCHVIEW","ESTE MIDE: " + ofertaList.size());
+                recyclerView.setAdapter(null);
 
-                if (newText.isEmpty()|| newText.length()==0) {
-                    ofertaList.clear();
-                    recyclerView.setAdapter(null);
+                if (newText.isEmpty() || newText.length() == 0) {
+                    //ofertaList.clear();
+                    //recyclerView.setAdapter(null);
                     //VOLVEMOS A CARGAR LA LISTA DE OFERTAS
-                    JsonArrayRequest defaultSearch =  new JsonArrayRequest(Request.Method.POST, SEARCH_URL, null, new Response.Listener<JSONArray>() {
+                    JsonArrayRequest defaultSearch = new JsonArrayRequest(Request.Method.POST, SEARCH_URL, null, new Response.Listener<JSONArray>() {
                         @Override
                         public void onResponse(JSONArray response) {
                             Log.d("SEARCHVIEW", "LLEGO RESPONSE");
                             Log.d("SEARCHVIEW", "" + response);
+                            Log.d("SEARCHVIEW", "" + "**MIDE**" + ofertaList.size());
                             try {
-                                for (int i=0;i<response.length();i++) {
+                                for (int i = 0; i < response.length(); i++) {
                                     JSONObject jsonObject = response.getJSONObject(i);
-                                    String name = jsonObject.getString("name_offer");
-                                    System.out.println("OFERTA NAME: "+ name);
 
-                                    String subcategory = jsonObject.getString("name_category");
-                                    System.out.println("SUBCATE: "+ jsonObject.getString("name_category"));
                                     String img_path = jsonObject.getString("img_path");
-                                    ofertaList.add(new Oferta(jsonObject.getInt("id_offer"),jsonObject.getInt("price"),jsonObject.getString("name_category"),img_path,jsonObject.getInt("rating"), jsonObject.getString("img") ));
+                                    Oferta oferta = new Oferta(jsonObject.getInt("id_offer"), jsonObject.getInt("price"), jsonObject.getString("name_category"), img_path, jsonObject.getInt("rating"), jsonObject.getString("img"));
 
+                                    ofertaList.add(oferta);
+                                    Log.d("SEARCHVIEW", oferta.toString());
                                 }
 
-                                System.out.println("ESTE MIDE: "+ ofertaList.size());
+                                System.out.println("ESTE MIDE: " + ofertaList.size());
                                 ofertaAdapter = new OfertaAdapter(ofertaList, HomeActivity.this);//CASTEARLO
                                 recyclerView.setAdapter(ofertaAdapter);
 
                             } catch (JSONException e) {
                                 e.printStackTrace();
-                                Log.e("user",e.getMessage());
+                                Log.e("user", e.getMessage());
                             }
                         }
                     }, new Response.ErrorListener() {
@@ -419,62 +422,59 @@ public class HomeActivity extends AppCompatActivity {
                     });
 
                     MySingleton.getInstance(getApplicationContext()).addToRequestQueue(defaultSearch);
-                }else{
+                } else {
                     Log.d("SEARCHVIEW", "ELSE");
+                    ofertaList.clear();
+                    Log.d("SEARCHVIEW","EESTE MIDE: " + ofertaList.size());
+                    recyclerView.setAdapter(null);
 
                     //
-                    JsonArrayRequest jsonCustomSearch = new JsonArrayRequest(Request.Method.POST, SEARCH_URL, null, new Response.Listener<JSONArray>() {
+                    StringRequest stringRequest = new StringRequest(Request.Method.POST, SEARCH_URL, new Response.Listener<String>() {
                         @Override
-                        public void onResponse(JSONArray response) {
-                            ofertaList.clear();
-                            recyclerView.setAdapter(null);
-                            Log.d("SEARCHVIEW", response.toString());
-
+                        public void onResponse(String response) {
                             try {
-                                for (int i=0;i<response.length();i++) {
-                                    JSONObject jsonObject = response.getJSONObject(i);
-                                    String name = jsonObject.getString("name_offer");
-                                    System.out.println("OFERTA NAME: "+ name);
+                                JSONArray jsonArray = new JSONArray(response);
 
-                                    String subcategory = jsonObject.getString("name_category");
-                                    System.out.println("SUBCATE: "+ jsonObject.getString("name_category"));
+                                for (int i = 0; i < jsonArray.length(); i++) {
+
+                                    JSONObject jsonObject = jsonArray.getJSONObject(i);
+
                                     String img_path = jsonObject.getString("img_path");
+                                    //Log.d("SEARCHVIEW", "");
 
-                                    //ofertaList.add(new Oferta(jsonObject.getInt("id_offer"),jsonObject.getInt("price"),jsonObject.getString("name_category"), SubCategory.valueOf(subcategory.toUpperCase().replace(" ", "_")),img_path,jsonObject.getInt("rating")));
-                                    ofertaList.add(new Oferta(jsonObject.getInt("id_offer"),jsonObject.getInt("price"),jsonObject.getString("name_category"),img_path,jsonObject.getInt("rating"), jsonObject.getString("img") ));
+                                    Oferta oferta = new Oferta(jsonObject.getInt("id_offer"), jsonObject.getInt("price"), jsonObject.getString("name_category"), img_path, jsonObject.getInt("rating"), jsonObject.getString("img"));
 
-                                    System.out.println("**********************");
-
-
+                                    ofertaList.add(oferta);
+                                    Log.d("SEARCHVIEW", oferta.toString());
+                                    Log.d("SEARCHVIEW", "*");
                                 }
-
-                                System.out.println("ESTE MIDE: "+ ofertaList.size());
+                                Log.d("SEARCHVIEW", "AFTERBCL");
+                                Log.d("SEARCHVIEW","AEESTE MIDE: " + ofertaList.size());
                                 ofertaAdapter = new OfertaAdapter(ofertaList, HomeActivity.this);//CASTEARLO
                                 recyclerView.setAdapter(ofertaAdapter);
-                                ofertaAdapter.notifyDataSetChanged();
+                                Log.d("SEARCHVIEW","AEESTE MIDE: " + ofertaList.size());
+
                             } catch (JSONException e) {
                                 e.printStackTrace();
-                                Log.e("user",e.getMessage());
                             }
                         }
                     }, new Response.ErrorListener() {
                         @Override
                         public void onErrorResponse(VolleyError error) {
-
+                            Toast.makeText(HomeActivity.this, "Hubo un problema de conexión", Toast.LENGTH_SHORT).show();
                         }
-                    }) {
+                    }){
                         @Override
                         protected Map<String, String> getParams() throws AuthFailureError {
                             Map<String, String> params = new Hashtable<>();
                             params.put("word", newText);
-                            Log.d("SEACHVIEW", "BUSCAR: " + newText);
+
+                            Log.d("SEARCHVIEW", "BUSCAR: " + newText);
                             return params;
                         }
                     };
 
-                    System.out.println("TEXTCHANGE: "+newText);
-
-                    MySingleton.getInstance(getApplicationContext()).addToRequestQueue(jsonCustomSearch);
+                    MySingleton.getInstance(getApplicationContext()).addToRequestQueue(stringRequest);
 
                 }
                 //
@@ -485,15 +485,16 @@ public class HomeActivity extends AppCompatActivity {
         });
 
 
-
-        if (MainActivity.get_json(getApplicationContext())!=null) {
+        if (MainActivity.get_json(getApplicationContext()) != null) {
 
             circleImageView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Log.d("PROFILE", "holi?");
+                    toolbar.setVisibility(View.GONE);
+                    sv_buscador.setVisibility(View.GONE);
+
                     //Toast.makeText(HomeActivity.this, "EL PELUCA SAPEE", Toast.LENGTH_SHORT).show();
-                    m_ok.setVisible(true);
+                    //m_ok.setVisible(true);
                     drawerLayout.closeDrawers();
                     currentFragment = new Avatar_fr();
 
@@ -531,10 +532,10 @@ public class HomeActivity extends AppCompatActivity {
                 try {
                     JSONArray jsonArray = response;
 
-                    for (int i = 0; i<jsonArray.length();i++) {
+                    for (int i = 0; i < jsonArray.length(); i++) {
                         JSONObject jsonObject = jsonArray.getJSONObject(i);
-                        ItemService itemService = new ItemService(jsonObject.getInt("id_category"), jsonObject.getString("name_category"), jsonObject.getString("img")) ;
-                        itemServices.add(itemService );
+                        ItemService itemService = new ItemService(jsonObject.getInt("id_category"), jsonObject.getString("name_category"), jsonObject.getString("img"));
+                        itemServices.add(itemService);
                     }
 
 
@@ -561,38 +562,29 @@ public class HomeActivity extends AppCompatActivity {
         JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(Request.Method.POST, URL_OFFERS, null, new Response.Listener<JSONArray>() {
             @Override
             public void onResponse(JSONArray response) {
-                System.out.println("ON RESPONSE");
-                System.out.println("RESPONSE: "+ response.toString());
+                Log.d("CARGAR", "holi response");
+                Log.d("CARGAR","RESPONSE: " + response.toString());
                 ofertaList.clear();
 
                 try {
-                    for (int i=0;i<response.length();i++) {
+                    for (int i = 0; i < response.length(); i++) {
                         JSONObject jsonObject = response.getJSONObject(i);
-                        String name = jsonObject.getString("name_offer");
-                        System.out.println("OFERTA NAME: "+ name);
 
-                        String subcategory = jsonObject.getString("name_category");
-                        System.out.println("SUBCATE: "+ jsonObject.getString("name_category"));
-                        String img_path = jsonObject.getString("img_path");
+                        //String img_path = jsonObject.getString("img_path");
 
-                        //ofertaList.add(new Oferta(jsonObject.getInt("id_offer"),jsonObject.getInt("price"),jsonObject.getString("name_category"), SubCategory.valueOf(subcategory.toUpperCase().replace(" ", "_")),img_path,jsonObject.getInt("rating")));
-                        ofertaList.add(new Oferta(jsonObject.getInt("id_offer"),jsonObject.getInt("price"),jsonObject.getString("name_category"),img_path,jsonObject.getInt("rating"), jsonObject.getString("img") ));
-
-                        System.out.println("**********************");
-
+                        ofertaList.add(new Oferta(jsonObject.getInt("id_offer"), jsonObject.getInt("price"), jsonObject.getString("name_category"), jsonObject.getString("img_path"), jsonObject.getInt("rating"), jsonObject.getString("img")));
 
                     }
 
-                    System.out.println("ESTE MIDE: "+ ofertaList.size());
+                    System.out.println("ESTE MIDE: " + ofertaList.size());
                     ofertaAdapter = new OfertaAdapter(ofertaList, HomeActivity.this);//CASTEARLO
                     recyclerView.setAdapter(ofertaAdapter);
                     ofertaAdapter.notifyDataSetChanged();
                 } catch (JSONException e) {
                     e.printStackTrace();
-                    Log.e("user",e.getMessage());
                 }
 
-                System.out.println("TAMAÑO INSIDE: "+ ofertaList.size());
+                System.out.println("TAMAÑO INSIDE: " + ofertaList.size());
             }
         }, new Response.ErrorListener() {
             @Override
@@ -613,7 +605,7 @@ public class HomeActivity extends AppCompatActivity {
         Log.d("PROFILE", "ENTRE CAMBIAR FRAGMENT");
         m_buzon.setVisible(false);
 
-        fragmentManager =  getSupportFragmentManager();
+        fragmentManager = getSupportFragmentManager();
         fragmentManager.beginTransaction()
                 .replace(R.id.center_fr, fragment)
                 .commit();
@@ -625,7 +617,8 @@ public class HomeActivity extends AppCompatActivity {
     public void onBackPressed() {
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
         System.out.println("ATRAAAAAAAAAAAAAS");
-
+        toolbar.setVisibility(View.VISIBLE);
+        sv_buscador.setVisibility(View.VISIBLE);
         if (currentFragment != null) {
 
             fragmentManager = getSupportFragmentManager();
@@ -633,43 +626,35 @@ public class HomeActivity extends AppCompatActivity {
                     .hide(currentFragment).setTransition(FragmentTransaction.TRANSIT_FRAGMENT_CLOSE)
                     .commit();
             m_buzon.setVisible(true);
-            m_ok.setVisible(false);
+            //m_ok.setVisible(false);
             currentFragment = null;
-            System.out.println("POSICION A LIMPIAR: "+ fragment_position);
+            System.out.println("POSICION A LIMPIAR: " + fragment_position);
 
-        }
-
-        else{
+            Log.d("USERPROFILE", "resume");
+        } else {
             currentFragment = null;
             System.out.println("ACTUALEMTEN NO TIENES FRAGMENTS DELANTE!!");
-        }
 
+        }
 
 
     }
-
-
 
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
 
-        switch (id){
+        switch (id) {
             case R.id.m_inbox:
+/*                toolbar.setVisibility(View.GONE);
+                sv_buscador.setVisibility(View.GONE);
                 currentFragment = new Notifications_fr();
-                //cambiarFragment(currentFragment);
-                break;
-            case R.id.m_ok:
-                updateProfile();
-                url_img = null;
-                updateDrawerImage();
-                Avatar_fr.bitmap = null;
-                bitmap = null;
+                cambiarFragment(currentFragment);*/
                 break;
             case R.id.m_access:
                 Intent intent = new Intent(getApplicationContext(), MainActivity.class);
-                startActivityForResult(intent,RELOAD_ACTIVITY);
+                startActivityForResult(intent, RELOAD_ACTIVITY);
                 break;
         }
 
@@ -703,7 +688,7 @@ public class HomeActivity extends AppCompatActivity {
             } catch (IOException e) {
                 e.printStackTrace();
             }
-        }else if (requestCode == OPEN_MAPS_REQUEST && resultCode == RESULT_OK && data != null && data.getData() != null) {
+        } else if (requestCode == OPEN_MAPS_REQUEST && resultCode == RESULT_OK && data != null && data.getData() != null) {
             // De lo contrario, recogemos el resultado de la segunda actividad.
             Bundle extras = data.getExtras();
             adressLine = extras.getString("line");
@@ -722,15 +707,14 @@ public class HomeActivity extends AppCompatActivity {
 
     }
 
-    protected void updateDrawerImage(){
-        LinearLayout linearLayout = (LinearLayout)findViewById(R.id.cont_civ);
+    protected void updateDrawerImage() {
+        LinearLayout linearLayout = (LinearLayout) findViewById(R.id.cont_civ);
         linearLayout.setLayerType(View.LAYER_TYPE_SOFTWARE, null);
 
 
         Avatar_fr.bitmap = bitmap;
 
-        tv_name.setText(Avatar_fr.getTVName()+" "+ Avatar_fr.getTVLastName());
-
+        tv_name.setText(Avatar_fr.getTVName());
 
 
         if (bitmap != null) {
@@ -745,7 +729,7 @@ public class HomeActivity extends AppCompatActivity {
 
     }
 
-    public static int getUserId(Context c){
+    public static int getUserId(Context c) {
         JSONObject json = null;
         int user_id = 0;
         try {
@@ -758,7 +742,7 @@ public class HomeActivity extends AppCompatActivity {
         return user_id;
     }
 
-    protected String getUsername(){
+    protected String getUsername() {
         JSONObject json = null;
         String user_name = "";
         try {
@@ -771,7 +755,7 @@ public class HomeActivity extends AppCompatActivity {
         return user_name;
     }
 
-    protected String getLastname(){
+    protected String getLastname() {
         JSONObject json = null;
         String user_name = "";
         try {
@@ -784,7 +768,7 @@ public class HomeActivity extends AppCompatActivity {
         return user_name;
     }
 
-    protected String getBirthdate(){
+    protected String getBirthdate() {
         JSONObject json = null;
         String birthdate = "";
         try {
@@ -794,19 +778,29 @@ public class HomeActivity extends AppCompatActivity {
         } catch (JSONException e) {
             e.printStackTrace();
         }
+
+        Log.d("USERPROFILE", "GET BIRTHDATE: " + birthdate);
         return birthdate;
     }
 
     //SUBE IMAGEN AL SERVIDOR Y ACTUALIZA LA BBDD
-    public void updateProfile(){
+    public void updateProfile() {
+        toolbar.setVisibility(View.VISIBLE);
+        sv_buscador.setVisibility(View.VISIBLE);
+
+
+
         //Showing the progress dialog
-        final ProgressDialog loading = ProgressDialog.show(this,"Actualizando perfil","Espere por favor...",false,false);
+        final ProgressDialog loading = ProgressDialog.show(this, "Actualizando perfil", "Espere por favor...", false, false);
         StringRequest stringRequest = new StringRequest(Request.Method.POST, UPLOAD_URL,
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String s) {
                         loading.dismiss();
-                        System.out.println("UPLOAD SUCCESFULL");
+                        Log.d("IMAGE", "UPLOAD SUCCESFULL");
+                        Log.d("IMAGE", s);
+
+
                         //Toast.makeText(HomeActivity.this, Avatar_fr.getTVName(), Toast.LENGTH_SHORT).show();
                     }
                 },
@@ -816,20 +810,20 @@ public class HomeActivity extends AppCompatActivity {
                         loading.dismiss();
                         //Toast.makeText(HomeActivity.this, "Problemas de conexión, vuelvalo a intentar", Toast.LENGTH_SHORT).show();
                     }
-                }){
+                }) {
             @Override
             protected Map<String, String> getParams() throws AuthFailureError {
                 //Getting Image Name
                 String image = "";
-                if (Avatar_fr.bitmap == null){
-                    System.out.println("NO HAS CAMBIADO LA IMAGEN");
-                }else {
-                    System.out.println("HAS CAMBIADO EL FONDO");
+                if (Avatar_fr.bitmap == null) {
+                    Log.d("IMAGE", "NO HAS CAMBIADO LA IMAGEN");
+                } else {
+                    Log.d("IMAGE", "HAS CAMBIADO EL FONDO");
                     image = getStringImage(bitmap);
                     Avatar_fr.bitmap = null;
                 }
                 //Creating parameters
-                Map<String,String> params = new Hashtable<String, String>();
+                Map<String, String> params = new Hashtable<String, String>();
 
                 JSONObject json = null;
                 int id_user = 0;
@@ -842,6 +836,7 @@ public class HomeActivity extends AppCompatActivity {
 
                 //Adding parameters
                 params.put("id", String.valueOf(id_user));
+
                 params.put("image", image);
                 //parametros edu
                 params.put("name", Avatar_fr.getTVName());
@@ -849,33 +844,37 @@ public class HomeActivity extends AppCompatActivity {
                 params.put("birthDate", Avatar_fr.getDPBirthDate());
 
 
-                System.out.println("BIRTHDATE: "+ Avatar_fr.getDPBirthDate());
                 return params;
             }
         };
 
         //Creating a Request Queue
         MySingleton.getInstance(this).addToRequestQueue(stringRequest);
-
+        url_img = null;
+        updateDrawerImage();
+        Avatar_fr.bitmap = null;
+        bitmap = null;
     }
 
-    public String getStringImage(Bitmap bmp){
+    public String getStringImage(Bitmap bmp) {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
 
-        System.out.println("WIDT IMG: "+ bmp.getWidth());
-        System.out.println("HEIGHT IMG: "+ bmp.getHeight());
+        System.out.println("WIDT IMG: " + bmp.getWidth());
+        System.out.println("HEIGHT IMG: " + bmp.getHeight());
 
 
         bmp.compress(Bitmap.CompressFormat.PNG, 100, baos);
         byte[] imageBytes = baos.toByteArray();
         String encodedImage = Base64.encodeToString(imageBytes, Base64.DEFAULT);
+
+        Log.d("IMAGE", encodedImage);
         return encodedImage;
     }
 
-    protected Bitmap resizeImage(Bitmap bmp){
+    protected Bitmap resizeImage(Bitmap bmp) {
         Matrix m = new Matrix();
         m.setRectToRect(new RectF(0, 0, bmp.getWidth(), bmp.getHeight()), new RectF(0, 0, 250, 250), Matrix.ScaleToFit.CENTER);
-        return  Bitmap.createBitmap(bmp, 0, 0, bmp.getWidth(), bmp.getHeight(), m, true);
+        return Bitmap.createBitmap(bmp, 0, 0, bmp.getWidth(), bmp.getHeight(), m, true);
     }
 
     @Override
@@ -884,7 +883,6 @@ public class HomeActivity extends AppCompatActivity {
         super.onResume();
 
     }
-
 
 
 }

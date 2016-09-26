@@ -4,9 +4,9 @@
     android:layout_height="match_parent"
     tools:activity=".fragments.Avatar_fr"
     android:orientation="vertical"
-    android:paddingTop="80dp"
-    android:id="@+id/pepe"
-    android:background="#fff">
+    android:paddingTop="50dp"
+    android:id="@+id/ll_avatar"
+    android:background="@color/colorPrimary">
 
     <!-- TODO: Update blank fragment layout -->
 
@@ -25,7 +25,7 @@
             android:layout_height="125dp"
             android:layout_gravity="center_horizontal"
             app:civ_border_width="2dp"
-            app:civ_border_color="#A8A8A8"
+            app:civ_border_color="@color/colorAccent"
             android:src="#000000" />
 
         <LinearLayout
@@ -36,6 +36,8 @@
             android:gravity="center_vertical">
 
             <EditText
+                android:background="@drawable/textview_border"
+                android:padding="10dp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:inputType="textPersonName"
@@ -43,10 +45,13 @@
                 android:id="@+id/et_R_name"
                 android:hint="Nombre"
                 android:layout_marginLeft="15dp"
-                android:textColor="#000"
+                android:textColor="#333"
                 android:textColorHint="#aaa" />
 
             <EditText
+                android:background="@drawable/textview_border"
+                android:padding="10dp"
+                android:layout_marginTop="5dp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:inputType="textPersonName"
@@ -55,19 +60,19 @@
                 android:hint="Apellidos"
                 android:layout_marginLeft="15dp"
                 android:textColorHint="#aaa"
-                android:textColor="#000" />
+                android:textColor="#333" />
         </LinearLayout>
     </LinearLayout>
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Fecha de nacimiento"
+        android:text="Fecha de nacimiento:"
         android:id="@+id/textView"
-        android:textSize="18dp"
+        android:textSize="22dp"
         android:layout_gravity="center_horizontal"
         android:layout_marginTop="40dp"
-        android:textColor="#000" />
+        android:textColor="#fff" />
 
     <DatePicker
         android:layout_width="wrap_content"
@@ -77,6 +82,17 @@
         android:datePickerMode="spinner"
         android:layout_gravity="center_horizontal"
         android:startYear="1900" />
+
+    <Button
+        android:layout_margin="25dp"
+        android:padding="15dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="GUARDAR"
+        android:id="@+id/btn_guardar"
+        android:background="@drawable/border_login"
+        android:textColor="#ffffff"
+        android:layout_centerHorizontal="true" />
 
 
 </LinearLayout>

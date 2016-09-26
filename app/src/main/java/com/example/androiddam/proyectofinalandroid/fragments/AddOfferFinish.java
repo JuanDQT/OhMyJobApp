@@ -42,6 +42,9 @@ import java.util.TreeSet;
  */
 public class AddOfferFinish extends Fragment implements View.OnClickListener {
 
+    private static final int PRICE_SERVICE = 0;
+    private static final int PRICE_HOURS = 1;
+
     private EditText etDescription;
     private TextView tvYears;
     //DAYS
@@ -80,6 +83,8 @@ public class AddOfferFinish extends Fragment implements View.OnClickListener {
     public static final String KEY_DAYS = "days";
     public static final String KEY_TELEPHONE = "b_telephone";
     public static final String KEY_STUDIES = "b_studies";
+    public static final String KEY_T_SERVICE = "type_service";
+    public static final String KEY_T_HOURS = "type_hours";
 
     private String location;
     private String zipcode;
@@ -88,6 +93,8 @@ public class AddOfferFinish extends Fragment implements View.OnClickListener {
     private int experience = 0;
     private String showTelephone = "0";
     private String showStudies = "0";
+    private String type_service = "0";
+    private String type_hours = "0";
 
     public AddOfferFinish() {
         // Required empty public constructor
@@ -127,6 +134,11 @@ public class AddOfferFinish extends Fragment implements View.OnClickListener {
         this.nameOffer = bundle.getString("nameOffer");
         this.price = bundle.getInt("price");
         this.typeService = bundle.getInt("typeService");
+
+        if (typeService == PRICE_SERVICE) {
+            type_service = "1";
+        }else if (typeService == PRICE_HOURS)
+            type_hours = "1";
 
         //Toast.makeText(getActivity(), "NAME OFFER: "+ nameOffer + "\tID CATEGORY: "+ categoryId + "\tPRCICE: "+ price + "\tTYPE_SERVICE: "+ typeService, Toast.LENGTH_SHORT).show();
 
@@ -292,6 +304,8 @@ public class AddOfferFinish extends Fragment implements View.OnClickListener {
 
                 map.put(KEY_TELEPHONE, showTelephone);
                 map.put(KEY_STUDIES, showStudies);
+                map.put(KEY_T_SERVICE, type_service);
+                map.put(KEY_T_HOURS, type_hours);
 
                 return map;
             }

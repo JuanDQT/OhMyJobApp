@@ -56,13 +56,14 @@ public class OfertaAdapter extends RecyclerView.Adapter<OfertaAdapter.ViewHolder
             holder.tv_price.setTextSize(20);
         } else {
             holder.tv_price.setText(String.valueOf(ofertaList.get(position).getPrice()) + "€");
+            holder.tv_price.setTextSize(30);
         }
 
         holder.tv_id.setText(String.valueOf(ofertaList.get(position).getId()));
 
 
         if (ofertaList.get(position).getPic_profile().length() > 0) {
-            Picasso.with(context).load(ofertaList.get(position).getPic_profile()).memoryPolicy(MemoryPolicy.NO_CACHE).transform(new CircleTransform()).into(holder.civ_profile);
+            Picasso.with(context).load(ofertaList.get(position).getPic_profile()).memoryPolicy(MemoryPolicy.NO_STORE).transform(new CircleTransform()).into(holder.civ_profile);
         } else
             holder.civ_profile.setImageResource(R.drawable.new_user);
 

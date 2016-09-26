@@ -69,8 +69,10 @@ public class OfferShowActivity extends FragmentActivity implements OnMapReadyCal
     private double lat;
     private double lng;
     private String id_offer;
+    private String offerName;
     private String phone;
     private double user_rating;
+    private String offerEmail;
     private int experience;
 
 
@@ -131,6 +133,7 @@ public class OfferShowActivity extends FragmentActivity implements OnMapReadyCal
         tvDisponibility = (TextView) findViewById(R.id.tv_disponibility);
         tvStudies = (TextView) findViewById(R.id.tv_studies);
         tvLocation = (TextView) findViewById(R.id.tv_location);
+        tv_fav = (TextView) findViewById(R.id.tv_fav);
         tvType = (TextView) findViewById(R.id.tv_type_price);
         llStudies = (LinearLayout) findViewById(R.id.ll_studies);
 
@@ -332,6 +335,18 @@ public class OfferShowActivity extends FragmentActivity implements OnMapReadyCal
             }
         });
 
+        llChatUser.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent emailIntent = new Intent(Intent.ACTION_SENDTO, Uri.fromParts(
+                        "mailto",offerEmail, null));
+                emailIntent.putExtra(Intent.EXTRA_SUBJECT, offerName + " - OhMyJob!");
+                emailIntent.putExtra(Intent.EXTRA_TEXT, "Hola!\nEstoy interesado en tu oferta publicada en OhMyJob!");
+                startActivity(Intent.createChooser(emailIntent, "Send email..."));
+
+            }
+        });
+
         ll_fav_user.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -373,9 +388,12 @@ public class OfferShowActivity extends FragmentActivity implements OnMapReadyCal
 
                         Log.d("FINISH", response);
                         jsonOffer = new JSONObject(response);
-                        tv_offer_name.setText(jsonOffer.getString("name_offer"));
+                        offerName = jsonOffer.getString("name_offer");
+                        tv_offer_name.setText(offerName);
                         user_id = jsonOffer.getInt("user_id");
                         tvOfferTitle.setText(jsonOffer.getString("name_category"));
+                        offerEmail = jsonOffer.getString("offer_email");
+
                         phone = jsonOffer.getString("phone");
                         if (phone.length() == 0) {
                             ll_call_user.setVisibility(View.GONE);
@@ -384,19 +402,18 @@ public class OfferShowActivity extends FragmentActivity implements OnMapReadyCal
                             ll_call_user.setVisibility(View.VISIBLE);
                             llChatUser.setVisibility(View.GONE);
                         }
-                        if (jsonOffer.getString("price").equals("0")) {
-                            Log.d("FINISH", "NUNCA ENTRO");
-                            tvOfferPrice.setText("A convenir");
-                            tvOfferPrice.setTextSize(20);
-                            tvType.setVisibility(View.GONE);
-                        }else{
-                            tvOfferPrice.setText(jsonOffer.getString("price") + "€");
-                            Log.d("FINISH", "TE PONDRE PRECIO DE " + jsonOffer.getString("price"));
-                            Log.d("FINISH", "ERES DEL TIPO " + TypeJob.getTypeJob(jsonOffer.getInt("type")));
-                            tvType.setText(TypeJob.getTypeJob(jsonOffer.getInt("type")));
-                        }
+
 
                         tvOfferDescription.setText(jsonOffer.getString("description"));
+
+                        tv_fav.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View view) {
+
+                            }
+                        });
+
+
                         user_rating = Double.parseDouble(jsonOffer.getString("rating"));
                         experience = Integer.valueOf(jsonOffer.getInt("experience"));
 
@@ -410,9 +427,9 @@ public class OfferShowActivity extends FragmentActivity implements OnMapReadyCal
                         if (experience== 0)
                             tvExperience.setText("Sin experiencia");
                         if (experience == 1)
-                            tvExperience.setText(experience + " años");
-                        else if (experience>1)
                             tvExperience.setText(experience + " año");
+                        else if (experience>1)
+                            tvExperience.setText(experience + " años");
 
                         tvLocation.setText(jsonOffer.getString("location"));
 
@@ -431,7 +448,17 @@ public class OfferShowActivity extends FragmentActivity implements OnMapReadyCal
                             stars[0].setVisibility(View.VISIBLE);
                         }
 
-
+                        if (jsonOffer.getString("price").equals("0")) {
+                            Log.d("FINISH", "NUNCA ENTRO");
+                            tvOfferPrice.setText("A convenir");
+                            tvOfferPrice.setTextSize(20);
+                            tvType.setVisibility(View.GONE);
+                        }else{
+                            tvOfferPrice.setText(jsonOffer.getString("price") + "€");
+                            Log.d("FINISH", "TE PONDRE PRECIO DE " + jsonOffer.getString("price"));
+                            Log.d("FINISH", "ERES DEL TIPO " + TypeJob.getTypeJob(jsonOffer.getInt("type")));
+                            tvType.setText(TypeJob.getTypeJob(jsonOffer.getInt("type")));
+                        }
                     } catch (JSONException e) {
 
                     }
