@@ -10,6 +10,7 @@ android {
         targetSdkVersion 23
         versionCode 1
         versionName "1.0"
+        multiDexEnabled true
     }
     buildTypes {
         release {
@@ -23,7 +24,6 @@ dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
     compile project(':volley')
 
-
     compile 'com.android.support:appcompat-v7:23.4.0'
     compile 'com.google.android.gms:play-services:9.4.0'
     compile 'com.android.support:support-v4:23.4.0'
@@ -36,5 +36,6 @@ dependencies {
     compile 'com.github.Jaouan:Revealator:1.2.0'
     compile 'com.labo.kaji:fragmentanimations:0.1.0'
     compile 'jp.co.cyberagent.android.gpuimage:gpuimage-library:1.4.1'
+    compile 'com.android.support:multidex:1.0.0'
 
 }
