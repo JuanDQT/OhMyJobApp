@@ -33,6 +33,7 @@
             android:name=".activities.MainActivity"
             android:label="@string/app_name"
             android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateHidden"
             android:theme="@style/MiThema.fullScreen" />
         <activity
             android:theme="@style/MiThema.fullScreen"

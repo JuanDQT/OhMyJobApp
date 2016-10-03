@@ -5,11 +5,12 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.support.design.widget.TextInputEditText;
+import android.support.design.widget.TextInputLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -39,8 +40,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private static String email;
     private static String password;
 
-    private EditText et_email;
-    private EditText et_password;
+    private TextInputEditText tietEmail;
+    private TextInputEditText tietPassword;
+
+    private TextInputLayout tilEmail;
+    private TextInputLayout tilPassword;
 
     private TextView tvLogin;
     private Button btn_login;
@@ -82,8 +86,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             finish();
         } else {
 
-            et_password = (EditText) findViewById(R.id.et_password);
-            et_email = (EditText) findViewById(R.id.et_email);
+            tietPassword = (TextInputEditText) findViewById(R.id.et_password);
+            tietEmail = (TextInputEditText) findViewById(R.id.et_email);
+            tilEmail = (TextInputLayout) findViewById(R.id.tilEmail);
+            tilPassword = (TextInputLayout) findViewById(R.id.tilPassword);
+
             pb_login = (ProgressBar) findViewById(R.id.pg_login);
 
             btn_login = (Button) findViewById(R.id.btn_login);
@@ -117,8 +124,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     private void userLogin() {
-        email = et_email.getText().toString().trim();
-        password = et_password.getText().toString().trim();
+        email = tietEmail.getText().toString().trim();
+        password = tietPassword.getText().toString().trim();
 
         StringRequest stringRequest = new StringRequest(Request.Method.POST, LOGIN_URL, new Response.Listener<String>() {
             @Override
@@ -127,13 +134,15 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
                 //EN CASO QUE NO DE ERROR
                 if (!response.trim().equals("failure")) {
+                    tilEmail.setError(null);
+                    tilPassword.setError(null);
                     openProfile();
                     //GUARDAMOS EL JSON
                     set_json(getApplicationContext(), response);
 
                 } else {
-                    et_email.setError("Usuario incorrecto");
-                    et_password.setError("Contraseña incorrecta");
+                    tilEmail.setError("Usuario o contraseña incorrectos");
+                    tilPassword.setError("Usuario o contraseña incorrectos");
                 }
 
 

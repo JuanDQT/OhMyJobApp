@@ -30,6 +30,7 @@ import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.SearchView;
 import android.widget.TextView;
@@ -83,6 +84,8 @@ public class HomeActivity extends AppCompatActivity {
     FragmentManager fragmentManager;
     private Fragment currentFragment;
     private Toolbar toolbar;
+    private ProgressBar pbLoading;
+
 
     private ImageView iv_blur_profile;
 
@@ -168,6 +171,8 @@ public class HomeActivity extends AppCompatActivity {
         drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         recyclerView = (RecyclerView) findViewById(R.id.rv_ofertas);
         recyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
+        pbLoading = (ProgressBar) findViewById(R.id.pbLoagingOffers);
+        recyclerView.setVisibility(View.INVISIBLE);
 
         ofertaList = new ArrayList<>();
 
@@ -559,12 +564,20 @@ public class HomeActivity extends AppCompatActivity {
 
 
     private void cargarOfertas() {
+        pbLoading.setVisibility(View.VISIBLE);
+        recyclerView.setAdapter(null);
+
+
+
         JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(Request.Method.POST, URL_OFFERS, null, new Response.Listener<JSONArray>() {
             @Override
             public void onResponse(JSONArray response) {
-                Log.d("CARGAR", "holi response");
+                recyclerView.setVisibility(View.VISIBLE);
+                pbLoading.setVisibility(View.GONE);
+
                 Log.d("CARGAR","RESPONSE: " + response.toString());
                 ofertaList.clear();
+
 
                 try {
                     for (int i = 0; i < response.length(); i++) {
