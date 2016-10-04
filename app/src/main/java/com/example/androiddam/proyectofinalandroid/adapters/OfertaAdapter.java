@@ -41,6 +41,8 @@ public class OfertaAdapter extends RecyclerView.Adapter<OfertaAdapter.ViewHolder
         this.context = context;
     }
 
+
+
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.label_oferta, parent, false);

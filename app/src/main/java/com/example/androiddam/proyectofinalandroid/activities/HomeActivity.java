@@ -64,11 +64,9 @@ import org.json.JSONObject;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 import jp.wasabeef.picasso.transformations.BlurTransformation;
@@ -406,7 +404,6 @@ public class HomeActivity extends AppCompatActivity {
                 Log.d("SEARCHVIEW", "ESTE MIDE: " + ofertaList.size());
                 recyclerView.setAdapter(null);
 
-
                 if (newText.isEmpty() || newText.length() == 0) {
                     //ofertaList.clear();
                     //recyclerView.setAdapter(null);
@@ -427,11 +424,12 @@ public class HomeActivity extends AppCompatActivity {
                                     Oferta oferta = new Oferta(jsonObject.getInt("id_offer"), jsonObject.getInt("price"), jsonObject.getString("name_category"), img_path, jsonObject.getInt("rating"), jsonObject.getString("img"));
 
                                     ofertaList.add(oferta);
+
                                     Log.d("SEARCHVIEW", oferta.toString());
                                 }
 
                                 System.out.println("ESTE MIDE: " + ofertaList.size());
-                                ofertaAdapter = new OfertaAdapter(ofertaList, HomeActivity.this);//CASTEARLO
+                                //ofertaAdapter = new OfertaAdapter(ofertaList, HomeActivity.this);
                                 recyclerView.setAdapter(ofertaAdapter);
 
                             } catch (JSONException e) {

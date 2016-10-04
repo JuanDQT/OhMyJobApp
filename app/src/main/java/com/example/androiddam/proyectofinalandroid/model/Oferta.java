@@ -17,6 +17,42 @@ public class Oferta {
     private int user_id;
     private String url_category;
 
+    public int getId() {
+        return id;
+    }
+
+    public String getPic_profile() {
+        return pic_profile;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public int getPrice() {
+        return price;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public Integer getRating() {
+        return rating;
+    }
+
+    public int getCp() {
+        return cp;
+    }
+
+    public int getUser_id() {
+        return user_id;
+    }
+
     //CONSTRUCTOR ADAPTER
     public Oferta(int id, int price, String name, String pic_profile, Integer rating, String url_category) {
         this.id = id;
@@ -44,79 +80,7 @@ public class Oferta {
         this.description = description;
     }*/
 
-/*    public Category getCategory() {
-        return category;
-    }
 
-    public void setCategory(Category category) {
-        this.category = category;
-    }*/
-
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
-    }
-
-
-
-    public String getUsername() {
-        return username;
-    }
-
-    public void setUsername(String username) {
-        this.username = username;
-    }
-
-    public int getPrice() {
-        return price;
-    }
-
-    public void setPrice(int price) {
-        this.price = price;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
-    public String getPic_profile() {
-        return pic_profile;
-    }
-
-    public void setPic_profile(String pic_profile) {
-        this.pic_profile = pic_profile;
-    }
-
-    public Integer getRating() {
-        return rating;
-    }
-
-    public void setRating(int rating) {
-        this.rating = rating;
-    }
-
-    public int getCp() {
-        return cp;
-    }
-
-    public void setCp(int cp) {
-        this.cp = cp;
-    }
 
     public String getUrl_category() {
         return url_category;
@@ -141,4 +105,6 @@ public class Oferta {
     public void setUrl_category(String url_category) {
         this.url_category = url_category;
     }
+
+
 }
