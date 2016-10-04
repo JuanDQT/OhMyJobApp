@@ -98,7 +98,26 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
             tvLogin = (TextView) findViewById(R.id.tv_register);
             tvLogin.setOnClickListener(this);
+
+            tietEmail.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+                @Override
+                public void onFocusChange(View view, boolean b) {
+                    tilEmail.setError(null);
+
+                }
+            });
+
+            tietPassword.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+                @Override
+                public void onFocusChange(View view, boolean b) {
+                    tilPassword.setError(null);
+
+                }
+            });
+
+
         }
+
 
 
     }
@@ -124,6 +143,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     private void userLogin() {
+        btn_login.setVisibility(View.GONE);
+        pb_login.setVisibility(View.VISIBLE);
+
         email = tietEmail.getText().toString().trim();
         password = tietPassword.getText().toString().trim();
 
@@ -143,6 +165,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 } else {
                     tilEmail.setError("Usuario o contraseña incorrectos");
                     tilPassword.setError("Usuario o contraseña incorrectos");
+
+                    tietPassword.setText("");
+
+                    pb_login.setVisibility(View.GONE);
+                    btn_login.setVisibility(View.VISIBLE);
+
                 }
 
 
@@ -189,28 +217,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
 
     private void openProfile() {
-        //
-        CircularAnim.hide(btn_login)
-                .endRadius(pb_login.getHeight() / 2)
-                .onAnimationEndListener(new CircularAnim.OnAnimationEndListener() {
+        CircularAnim.fullActivity(MainActivity.this, pb_login).colorOrImageRes(R.color.colorAccent)
+                .go(new CircularAnim.OnAnimationEndListener() {
                     @Override
                     public void onAnimationEnd() {
-                        pb_login.setVisibility(View.VISIBLE);
-                        pb_login.postDelayed(new Runnable() {
-                            @Override
-                            public void run() {
-                                CircularAnim.fullActivity(MainActivity.this, pb_login).colorOrImageRes(R.color.colorAccent)
-                                        .go(new CircularAnim.OnAnimationEndListener() {
-                                            @Override
-                                            public void onAnimationEnd() {
-                                                startActivity(new Intent(MainActivity.this, HomeActivity.class));
-                                                finish();
-                                            }
-                                        });
-                            }
-                        }, 3000);
+                        startActivity(new Intent(MainActivity.this, HomeActivity.class));
+                        finish();
                     }
-                }).go();
+                });
 
     }
 

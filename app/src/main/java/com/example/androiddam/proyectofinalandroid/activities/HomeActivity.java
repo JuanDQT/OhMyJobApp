@@ -9,6 +9,7 @@ import android.graphics.RectF;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.speech.RecognizerIntent;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
@@ -20,6 +21,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.text.TextUtils;
 import android.util.Base64;
 import android.util.Log;
 import android.view.Menu;
@@ -32,7 +34,6 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
-import android.widget.SearchView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -52,6 +53,7 @@ import com.example.androiddam.proyectofinalandroid.fragments.Mensajes_fr;
 import com.example.androiddam.proyectofinalandroid.model.ItemService;
 import com.example.androiddam.proyectofinalandroid.model.Oferta;
 import com.example.androiddam.proyectofinalandroid.model.OptionMenu;
+import com.miguelcatalan.materialsearchview.MaterialSearchView;
 import com.squareup.picasso.MemoryPolicy;
 import com.squareup.picasso.Picasso;
 
@@ -62,9 +64,11 @@ import org.json.JSONObject;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 import jp.wasabeef.picasso.transformations.BlurTransformation;
@@ -72,14 +76,11 @@ import jp.wasabeef.picasso.transformations.BlurTransformation;
 public class HomeActivity extends AppCompatActivity {
     private DrawerLayout drawerLayout;
     private RecyclerView recyclerView;
-    private SearchView sv_buscador;
+    private MaterialSearchView msvBuscador;
     private SwipeRefreshLayout srl_reload;
     private OfertaAdapter ofertaAdapter;
     private List<Fragment> fragmentOptions;
     private int fragment_position;
-    private Menu menu;
-    private MenuItem m_buzon;
-    //private MenuItem m_ok;
     private MenuItem m_acces;
     FragmentManager fragmentManager;
     private Fragment currentFragment;
@@ -140,19 +141,21 @@ public class HomeActivity extends AppCompatActivity {
         Log.e("LOG", "OnCreateOptionMenu");
 
         getMenuInflater().inflate(R.menu.menu_top, menu);
-        m_buzon = menu.findItem(R.id.m_inbox);
-        //m_ok = menu.findItem(R.id.m_ok);
 
-        m_acces = menu.findItem(R.id.m_access);
+        //m_acces = menu.findItem(R.id.m_access);
+
+        MenuItem item = menu.findItem(R.id.action_search);
+        msvBuscador.setMenuItem(item);
+
+
         //Toast.makeText(HomeActivity.this, "CARAJO 1", Toast.LENGTH_SHORT).show();
-        if (MainActivity.get_json(getApplicationContext()) == null) {
+/*        if (MainActivity.get_json(getApplicationContext()) == null) {
             m_acces.setVisible(true);
-            m_buzon.setVisible(false);
             //m_ok.setVisible(false);
         } else {
             //m_ok.setVisible(false);
             m_acces.setVisible(false);
-        }
+        }*/
         return true;
     }
 
@@ -165,6 +168,11 @@ public class HomeActivity extends AppCompatActivity {
 
         toolbar = (Toolbar) findViewById(R.id.mi_toolbar);
         setSupportActionBar(toolbar);
+        //getSupportActionBar().setHomeButtonEnabled(true);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
+
+        toolbar.setNavigationIcon(getDrawable(R.drawable.ic_person_white_24dp));
 
         fragmentOptions = new ArrayList<>();
 
@@ -179,6 +187,8 @@ public class HomeActivity extends AppCompatActivity {
         System.out.println("LECHERO");
 
         if (MainActivity.get_json(getApplicationContext()) != null) {
+            getSupportActionBar().setDisplayHomeAsUpEnabled(false);
+            getSupportActionBar().setDisplayShowHomeEnabled(false);
 
             //ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawerLayout, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
             toggle = new ActionBarDrawerToggle(
@@ -206,7 +216,7 @@ public class HomeActivity extends AppCompatActivity {
                     super.onDrawerSlide(drawerView, 0); // this disables the animationToast
 
                     //InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-                    //imm.hideSoftInputFromWindow(sv_buscador.getWindowToken(), 0);
+                    //imm.hideSoftInputFromWindow(msvBuscador.getWindowToken(), 0);
 
 
                 }
@@ -363,6 +373,9 @@ public class HomeActivity extends AppCompatActivity {
         srl_reload.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
+                msvBuscador.setQuery("",false);
+                msvBuscador.clearFocus();
+                onBackPressed();
                 cargarOfertas();
                 srl_reload.setRefreshing(false);
             }
@@ -370,9 +383,10 @@ public class HomeActivity extends AppCompatActivity {
         });
 
 
-        sv_buscador = (SearchView) findViewById(R.id.sv_buscador);
+        msvBuscador = (MaterialSearchView) findViewById(R.id.msv_buscador);
+        msvBuscador.setVoiceSearch(true); //or false
 
-        sv_buscador.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+        msvBuscador.setOnQueryTextListener(new MaterialSearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
                 Log.d("NORMAL", "ENTER");
@@ -384,10 +398,14 @@ public class HomeActivity extends AppCompatActivity {
 
             @Override
             public boolean onQueryTextChange(final String newText) {
-                Log.d("SEARCHVIEW", "CAMBIA A: "+ newText);
+                recyclerView.setVisibility(View.GONE);
+                pbLoading.setVisibility(View.VISIBLE);
+
+                Log.d("SEARCHVIEW", "CAMBIA A: " + newText);
                 ofertaList.clear();
-                Log.d("SEARCHVIEW","ESTE MIDE: " + ofertaList.size());
+                Log.d("SEARCHVIEW", "ESTE MIDE: " + ofertaList.size());
                 recyclerView.setAdapter(null);
+
 
                 if (newText.isEmpty() || newText.length() == 0) {
                     //ofertaList.clear();
@@ -396,6 +414,8 @@ public class HomeActivity extends AppCompatActivity {
                     JsonArrayRequest defaultSearch = new JsonArrayRequest(Request.Method.POST, SEARCH_URL, null, new Response.Listener<JSONArray>() {
                         @Override
                         public void onResponse(JSONArray response) {
+                            pbLoading.setVisibility(View.GONE);
+                            recyclerView.setVisibility(View.VISIBLE);
                             Log.d("SEARCHVIEW", "LLEGO RESPONSE");
                             Log.d("SEARCHVIEW", "" + response);
                             Log.d("SEARCHVIEW", "" + "**MIDE**" + ofertaList.size());
@@ -430,13 +450,17 @@ public class HomeActivity extends AppCompatActivity {
                 } else {
                     Log.d("SEARCHVIEW", "ELSE");
                     ofertaList.clear();
-                    Log.d("SEARCHVIEW","EESTE MIDE: " + ofertaList.size());
+                    Log.d("SEARCHVIEW", "EESTE MIDE: " + ofertaList.size());
                     recyclerView.setAdapter(null);
 
+                    recyclerView.setVisibility(View.GONE);
+                    pbLoading.setVisibility(View.VISIBLE);
                     //
                     StringRequest stringRequest = new StringRequest(Request.Method.POST, SEARCH_URL, new Response.Listener<String>() {
                         @Override
                         public void onResponse(String response) {
+                            pbLoading.setVisibility(View.GONE);
+                            recyclerView.setVisibility(View.VISIBLE);
                             try {
                                 JSONArray jsonArray = new JSONArray(response);
 
@@ -454,10 +478,10 @@ public class HomeActivity extends AppCompatActivity {
                                     Log.d("SEARCHVIEW", "*");
                                 }
                                 Log.d("SEARCHVIEW", "AFTERBCL");
-                                Log.d("SEARCHVIEW","AEESTE MIDE: " + ofertaList.size());
+                                Log.d("SEARCHVIEW", "AEESTE MIDE: " + ofertaList.size());
                                 ofertaAdapter = new OfertaAdapter(ofertaList, HomeActivity.this);//CASTEARLO
                                 recyclerView.setAdapter(ofertaAdapter);
-                                Log.d("SEARCHVIEW","AEESTE MIDE: " + ofertaList.size());
+                                Log.d("SEARCHVIEW", "AEESTE MIDE: " + ofertaList.size());
 
                             } catch (JSONException e) {
                                 e.printStackTrace();
@@ -468,7 +492,7 @@ public class HomeActivity extends AppCompatActivity {
                         public void onErrorResponse(VolleyError error) {
                             Toast.makeText(HomeActivity.this, "Hubo un problema de conexión", Toast.LENGTH_SHORT).show();
                         }
-                    }){
+                    }) {
                         @Override
                         protected Map<String, String> getParams() throws AuthFailureError {
                             Map<String, String> params = new Hashtable<>();
@@ -496,7 +520,7 @@ public class HomeActivity extends AppCompatActivity {
                 @Override
                 public void onClick(View v) {
                     toolbar.setVisibility(View.GONE);
-                    sv_buscador.setVisibility(View.GONE);
+                    msvBuscador.setVisibility(View.GONE);
 
                     //Toast.makeText(HomeActivity.this, "EL PELUCA SAPEE", Toast.LENGTH_SHORT).show();
                     //m_ok.setVisible(true);
@@ -568,14 +592,13 @@ public class HomeActivity extends AppCompatActivity {
         recyclerView.setAdapter(null);
 
 
-
         JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(Request.Method.POST, URL_OFFERS, null, new Response.Listener<JSONArray>() {
             @Override
             public void onResponse(JSONArray response) {
                 recyclerView.setVisibility(View.VISIBLE);
                 pbLoading.setVisibility(View.GONE);
 
-                Log.d("CARGAR","RESPONSE: " + response.toString());
+                Log.d("CARGAR", "RESPONSE: " + response.toString());
                 ofertaList.clear();
 
 
@@ -616,7 +639,6 @@ public class HomeActivity extends AppCompatActivity {
     public void cambiarFragment(Fragment fragment) {
         //menu.setGroupVisible(R.id.m_inbox,false);
         Log.d("PROFILE", "ENTRE CAMBIAR FRAGMENT");
-        m_buzon.setVisible(false);
 
         fragmentManager = getSupportFragmentManager();
         fragmentManager.beginTransaction()
@@ -631,14 +653,13 @@ public class HomeActivity extends AppCompatActivity {
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
         System.out.println("ATRAAAAAAAAAAAAAS");
         toolbar.setVisibility(View.VISIBLE);
-        sv_buscador.setVisibility(View.VISIBLE);
+        msvBuscador.setVisibility(View.VISIBLE);
         if (currentFragment != null) {
 
             fragmentManager = getSupportFragmentManager();
             fragmentManager.beginTransaction()
                     .hide(currentFragment).setTransition(FragmentTransaction.TRANSIT_FRAGMENT_CLOSE)
                     .commit();
-            m_buzon.setVisible(true);
             //m_ok.setVisible(false);
             currentFragment = null;
             System.out.println("POSICION A LIMPIAR: " + fragment_position);
@@ -650,6 +671,12 @@ public class HomeActivity extends AppCompatActivity {
 
         }
 
+        if (msvBuscador.isSearchOpen()) {
+            msvBuscador.closeSearch();
+        } else {
+            super.onBackPressed();
+        }
+
 
     }
 
@@ -659,13 +686,7 @@ public class HomeActivity extends AppCompatActivity {
         int id = item.getItemId();
 
         switch (id) {
-            case R.id.m_inbox:
-/*                toolbar.setVisibility(View.GONE);
-                sv_buscador.setVisibility(View.GONE);
-                currentFragment = new Notifications_fr();
-                cambiarFragment(currentFragment);*/
-                break;
-            case R.id.m_access:
+            case android.R.id.home:
                 Intent intent = new Intent(getApplicationContext(), MainActivity.class);
                 startActivityForResult(intent, RELOAD_ACTIVITY);
                 break;
@@ -682,6 +703,18 @@ public class HomeActivity extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
+
+        if (requestCode == MaterialSearchView.REQUEST_VOICE && resultCode == RESULT_OK) {
+            ArrayList<String> matches = data.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS);
+            if (matches != null && matches.size() > 0) {
+                String searchWrd = matches.get(0);
+                if (!TextUtils.isEmpty(searchWrd)) {
+                    msvBuscador.setQuery(searchWrd, false);
+                }
+            }
+
+            return;
+        }
 
         if (requestCode == PICK_IMAGE_REQUEST && resultCode == RESULT_OK && data != null && data.getData() != null) {
             Uri filePath = data.getData();
@@ -799,8 +832,7 @@ public class HomeActivity extends AppCompatActivity {
     //SUBE IMAGEN AL SERVIDOR Y ACTUALIZA LA BBDD
     public void updateProfile() {
         toolbar.setVisibility(View.VISIBLE);
-        sv_buscador.setVisibility(View.VISIBLE);
-
+        msvBuscador.setVisibility(View.VISIBLE);
 
 
         //Showing the progress dialog

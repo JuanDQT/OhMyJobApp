@@ -37,5 +37,6 @@ dependencies {
     compile 'com.labo.kaji:fragmentanimations:0.1.0'
     compile 'jp.co.cyberagent.android.gpuimage:gpuimage-library:1.4.1'
     compile 'com.android.support:multidex:1.0.0'
+    compile 'com.miguelcatalan:materialsearchview:1.4.0'
 
 }

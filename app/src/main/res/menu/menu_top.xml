@@ -3,18 +3,13 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <group
         android:id="@+id/menu">
-        <item
-            android:id="@+id/m_inbox"
-            android:icon="@drawable/inbox"
-            android:title=""
-            app:showAsAction="always"
-             />
 
         <item
-            android:id="@+id/m_access"
-            android:icon="@drawable/access"
-            android:title=""
-            app:showAsAction="always"
-            />
+            android:id="@+id/action_search"
+            android:icon="@drawable/ic_action_action_search"
+            android:orderInCategory="100"
+            android:title="@string/abc_search_hint"
+            app:showAsAction="always" />
+
     </group>
 </menu>

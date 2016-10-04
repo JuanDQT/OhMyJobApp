@@ -12,27 +12,7 @@
         android:layout_height="match_parent"
         >
 
-        <android.support.design.widget.AppBarLayout
-            android:id="@+id/app_bar_layout"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:theme="@style/ThemeOverlay.AppCompat.ActionBar"
-            >
 
-            <include
-                android:id="@+id/mi_toolbar"
-                layout="@layout/mi_toolbar"
-                />
-
-            <SearchView
-                android:id="@+id/sv_buscador"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:inputType="text"
-
-                />
-
-        </android.support.design.widget.AppBarLayout>
 
         <include
             android:id="@+id/center_fr" layout="@layout/fr_ofertas"
@@ -42,7 +22,44 @@
             app:layout_behavior="@string/appbar_scrolling_view_behavior"
             />
 
+
+        <android.support.design.widget.AppBarLayout
+            android:id="@+id/app_bar_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:theme="@style/ThemeOverlay.AppCompat.ActionBar"
+            >
+
+            <FrameLayout
+                android:id="@+id/toolbar_container"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+
+            <include
+                android:layout_width="match_parent"
+                android:layout_height="?attr/actionBarSize"
+                android:id="@+id/mi_toolbar"
+                layout="@layout/mi_toolbar"
+                />
+
+            <com.miguelcatalan.materialsearchview.MaterialSearchView
+                android:id="@+id/msv_buscador"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                style="@style/MaterialSearchViewStyle"
+                android:hint="Buscar..."
+                 />
+
+
+            </FrameLayout>
+
+
+        </android.support.design.widget.AppBarLayout>
+
+
     </android.support.design.widget.CoordinatorLayout>
+
 
 
     <fragment
@@ -57,4 +74,7 @@
         android:name="com.example.androiddam.proyectofinalandroid.fragments.CustomNavigationView"
 
         />
+
+
+
 </android.support.v4.widget.DrawerLayout>
