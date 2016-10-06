@@ -103,7 +103,7 @@ public class Oferta {
     }
 
     public void setUrl_category(String url_category) {
-        this.url_category = url_category;
+this.url_category = url_category;
     }
 
 

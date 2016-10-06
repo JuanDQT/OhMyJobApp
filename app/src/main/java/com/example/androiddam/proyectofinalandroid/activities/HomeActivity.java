@@ -241,7 +241,7 @@ public class HomeActivity extends AppCompatActivity {
                 ListView lv_menu = (ListView) findViewById(R.id.lv_menu);
                 //ListView lv_menu = (ListView) linearLayout.getRootView().findViewById(R.id.lv_menu);
                 ArrayList<OptionMenu> options = new ArrayList<>();
-                //options.add(new OptionMenu(R.drawable.profile, "Mi perfil", 0));
+                options.add(new OptionMenu(R.drawable.profile, "Mi perfil", 0));
                 options.add(new OptionMenu(R.drawable.upload, "Subir oferta", 0));
                 options.add(new OptionMenu(R.drawable.contacts, "Contactos", 0));
                 options.add(new OptionMenu(R.drawable.message, "Mensajes", 3));
@@ -259,25 +259,25 @@ public class HomeActivity extends AppCompatActivity {
                         System.out.println("SOY UNA IPCION PRESIONADA");
                         fragment_position = position;
                         switch (position) {
-                            case 0:
+                            case 1:
                                 //currentFragment = new AddWorkActivity();
                                 //cambiarFragment(currentFragment);
                                 Intent i = new Intent(getApplicationContext(), AddOfferActivity.class);
                                 startActivity(i);
                                 break;
-                            case 1:
+                            case 2:
                                 currentFragment = new Contact_fr();
                                 //cambiarFragment(currentFragment);
                                 getWindow().setSoftInputMode(
                                         WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
                                 break;
-                            case 2:
+                            case 3:
                                 currentFragment = new Mensajes_fr();
                                 //cambiarFragment(currentFragment);
                                 getWindow().setSoftInputMode(
                                         WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
                                 break;
-                            case 3:
+                            case 4:
                                 url_img = "";
                                 Avatar_fr.setTVName();
                                 System.out.println("CERRAR SESION:");
@@ -373,7 +373,6 @@ public class HomeActivity extends AppCompatActivity {
             public void onRefresh() {
                 msvBuscador.setQuery("",false);
                 msvBuscador.clearFocus();
-                onBackPressed();
                 cargarOfertas();
                 srl_reload.setRefreshing(false);
             }
@@ -667,13 +666,14 @@ public class HomeActivity extends AppCompatActivity {
             currentFragment = null;
             System.out.println("ACTUALEMTEN NO TIENES FRAGMENTS DELANTE!!");
 
+            if (msvBuscador.isSearchOpen()) {
+                msvBuscador.closeSearch();
+            } else {
+                super.onBackPressed();
+            }
         }
 
-        if (msvBuscador.isSearchOpen()) {
-            msvBuscador.closeSearch();
-        } else {
-            super.onBackPressed();
-        }
+
 
 
     }
