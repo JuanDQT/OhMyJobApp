@@ -49,7 +49,7 @@ import com.example.androiddam.proyectofinalandroid.adapters.OptionMenuAdapter;
 import com.example.androiddam.proyectofinalandroid.controllers.MySingleton;
 import com.example.androiddam.proyectofinalandroid.fragments.Avatar_fr;
 import com.example.androiddam.proyectofinalandroid.fragments.Contact_fr;
-import com.example.androiddam.proyectofinalandroid.fragments.Mensajes_fr;
+import com.example.androiddam.proyectofinalandroid.fragments.NotificationsFragment;
 import com.example.androiddam.proyectofinalandroid.model.ItemService;
 import com.example.androiddam.proyectofinalandroid.model.Oferta;
 import com.example.androiddam.proyectofinalandroid.model.OptionMenu;
@@ -241,7 +241,7 @@ public class HomeActivity extends AppCompatActivity {
                 ListView lv_menu = (ListView) findViewById(R.id.lv_menu);
                 //ListView lv_menu = (ListView) linearLayout.getRootView().findViewById(R.id.lv_menu);
                 ArrayList<OptionMenu> options = new ArrayList<>();
-                options.add(new OptionMenu(R.drawable.profile, "Mi perfil", 0));
+                //options.add(new OptionMenu(R.drawable.profile, "Mi perfil", 0));
                 options.add(new OptionMenu(R.drawable.upload, "Subir oferta", 0));
                 options.add(new OptionMenu(R.drawable.contacts, "Contactos", 0));
                 options.add(new OptionMenu(R.drawable.message, "Mensajes", 3));
@@ -259,25 +259,28 @@ public class HomeActivity extends AppCompatActivity {
                         System.out.println("SOY UNA IPCION PRESIONADA");
                         fragment_position = position;
                         switch (position) {
-                            case 1:
+                            case 0:
                                 //currentFragment = new AddWorkActivity();
                                 //cambiarFragment(currentFragment);
                                 Intent i = new Intent(getApplicationContext(), AddOfferActivity.class);
                                 startActivity(i);
                                 break;
-                            case 2:
+                            case 1:
                                 currentFragment = new Contact_fr();
                                 //cambiarFragment(currentFragment);
                                 getWindow().setSoftInputMode(
                                         WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
                                 break;
-                            case 3:
-                                currentFragment = new Mensajes_fr();
-                                //cambiarFragment(currentFragment);
+                            case 2:
+                                //msvBuscador.setVisibility(View.GONE);
+                                currentFragment = new NotificationsFragment();
+                                //currentFragment = new Notifications_fr();
+                                //currentFragment = new Mensajes_fr();
+                                cambiarFragment(currentFragment);
                                 getWindow().setSoftInputMode(
                                         WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
                                 break;
-                            case 4:
+                            case 3:
                                 url_img = "";
                                 Avatar_fr.setTVName();
                                 System.out.println("CERRAR SESION:");
@@ -419,8 +422,8 @@ public class HomeActivity extends AppCompatActivity {
                                 for (int i = 0; i < response.length(); i++) {
                                     JSONObject jsonObject = response.getJSONObject(i);
 
-                                    String img_path = jsonObject.getString("img_path");
-                                    Oferta oferta = new Oferta(jsonObject.getInt("id_offer"), jsonObject.getInt("price"), jsonObject.getString("name_category"), img_path, jsonObject.getInt("rating"), jsonObject.getString("img"));
+                                    //String img_path = jsonObject.getString("img_path");
+                                    Oferta oferta = new Oferta(jsonObject.getInt("id_offer"), jsonObject.getInt("price"), jsonObject.getString("name_category"), jsonObject.getInt("rating"), jsonObject.getString("img"));
 
                                     ofertaList.add(oferta);
 
@@ -465,10 +468,10 @@ public class HomeActivity extends AppCompatActivity {
 
                                     JSONObject jsonObject = jsonArray.getJSONObject(i);
 
-                                    String img_path = jsonObject.getString("img_path");
+                                    //String img_path = jsonObject.getString("img_path");
                                     //Log.d("SEARCHVIEW", "");
 
-                                    Oferta oferta = new Oferta(jsonObject.getInt("id_offer"), jsonObject.getInt("price"), jsonObject.getString("name_category"), img_path, jsonObject.getInt("rating"), jsonObject.getString("img"));
+                                    Oferta oferta = new Oferta(jsonObject.getInt("id_offer"), jsonObject.getInt("price"), jsonObject.getString("name_category"), jsonObject.getInt("rating"), jsonObject.getString("img"));
 
                                     ofertaList.add(oferta);
                                     Log.d("SEARCHVIEW", oferta.toString());
@@ -518,12 +521,11 @@ public class HomeActivity extends AppCompatActivity {
                 public void onClick(View v) {
                     toolbar.setVisibility(View.GONE);
                     msvBuscador.setVisibility(View.GONE);
-
+                    Toast.makeText(HomeActivity.this, "GO AVAATAR FULL SCREEN", Toast.LENGTH_SHORT).show();
                     //Toast.makeText(HomeActivity.this, "EL PELUCA SAPEE", Toast.LENGTH_SHORT).show();
                     //m_ok.setVisible(true);
                     drawerLayout.closeDrawers();
                     currentFragment = new Avatar_fr();
-
                     String url_imagen = "";
                     try {
                         JSONObject json = new JSONObject(MainActivity.get_json(getApplicationContext()));
@@ -605,7 +607,7 @@ public class HomeActivity extends AppCompatActivity {
 
                         //String img_path = jsonObject.getString("img_path");
 
-                        ofertaList.add(new Oferta(jsonObject.getInt("id_offer"), jsonObject.getInt("price"), jsonObject.getString("name_category"), jsonObject.getString("img_path"), jsonObject.getInt("rating"), jsonObject.getString("img")));
+                        ofertaList.add(new Oferta(jsonObject.getInt("id_offer"), jsonObject.getInt("price"), jsonObject.getString("name_category"), jsonObject.getInt("rating"), jsonObject.getString("img")));
 
                     }
 

@@ -17,14 +17,11 @@ import android.widget.TextView;
 import com.example.androiddam.proyectofinalandroid.R;
 import com.example.androiddam.proyectofinalandroid.activities.OfferShowActivity;
 import com.example.androiddam.proyectofinalandroid.model.Oferta;
-import com.squareup.picasso.MemoryPolicy;
 import com.squareup.picasso.Picasso;
 
 import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 import java.util.List;
-
-import de.hdodenhof.circleimageview.CircleImageView;
 
 /**
  * Created by Juan on 22/03/2016.
@@ -62,12 +59,6 @@ public class OfertaAdapter extends RecyclerView.Adapter<OfertaAdapter.ViewHolder
         }
 
         holder.tv_id.setText(String.valueOf(ofertaList.get(position).getId()));
-
-
-        if (ofertaList.get(position).getPic_profile().length() > 0) {
-            Picasso.with(context).load(ofertaList.get(position).getPic_profile()).memoryPolicy(MemoryPolicy.NO_STORE).transform(new CircleTransform()).into(holder.civ_profile);
-        } else
-            holder.civ_profile.setImageResource(R.drawable.new_user);
 
         if (ofertaList.get(position).getRating() != null || ofertaList.get(position).getRating() > 0) {
 
@@ -137,7 +128,6 @@ public class OfertaAdapter extends RecyclerView.Adapter<OfertaAdapter.ViewHolder
         TextView tv_price;
         TextView tv_id;
         ImageView iv_background;
-        CircleImageView civ_profile;
         ImageView[] stars;
 
         public ViewHolder(View itemView) {
@@ -146,7 +136,6 @@ public class OfertaAdapter extends RecyclerView.Adapter<OfertaAdapter.ViewHolder
             tv_price = (TextView) itemView.findViewById(R.id.tv_price);
             tv_id = (TextView) itemView.findViewById(R.id.tv_id);
             iv_background = (ImageView) itemView.findViewById(R.id.iv_background);
-            civ_profile = (CircleImageView) itemView.findViewById(R.id.civ_profile);
 
             stars = new ImageView[5];
             stars[0] = (ImageView) itemView.findViewById(R.id.iv_1);

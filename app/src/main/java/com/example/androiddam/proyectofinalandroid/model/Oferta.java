@@ -7,7 +7,6 @@ package com.example.androiddam.proyectofinalandroid.model;
 public class Oferta {
 
     private int id;
-    private String pic_profile;
     private String username;
     private int price;
     private String name;
@@ -21,9 +20,6 @@ public class Oferta {
         return id;
     }
 
-    public String getPic_profile() {
-        return pic_profile;
-    }
 
     public String getUsername() {
         return username;
@@ -54,11 +50,10 @@ public class Oferta {
     }
 
     //CONSTRUCTOR ADAPTER
-    public Oferta(int id, int price, String name, String pic_profile, Integer rating, String url_category) {
+    public Oferta(int id, int price, String name, Integer rating, String url_category) {
         this.id = id;
         this.price = price;
         this.name = name;
-        this.pic_profile = pic_profile;
         this.rating = rating;
         this.url_category = url_category;
     }
@@ -90,7 +85,6 @@ public class Oferta {
     public String toString() {
         return "Oferta{" +
                 "id=" + id +
-                ", pic_profile='" + pic_profile + '\'' +
                 ", username='" + username + '\'' +
                 ", price=" + price +
                 ", name='" + name + '\'' +
